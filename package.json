@@ -1,19 +1,19 @@
 {
-  "name": "natours",
-  "version": "1.0.0",
-  "description": "proyecto demo",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
-  },
-  "author": "JuanAn Fernandez",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "morgan": "^1.10.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+	"name": "natours",
+	"version": "1.0.0",
+	"description": "proyecto demo",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon server.js"
+	},
+	"author": "JuanAn Fernandez",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.17.1",
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.7"
+	}
 }

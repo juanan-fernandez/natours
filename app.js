@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 
@@ -16,8 +14,4 @@ const userRoutes = require('./routes/users');
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 
-//Server
-const port = 3000;
-app.listen(port, () => {
-	console.log(`Server listening on port ${port}`);
-});
+module.exports = app;
