@@ -1,9 +1,9 @@
 #Retrive all tours/
-GET  http://localhost:3000/api/v1/tours
+GET  http://localhost:3000/api/v1/users
 
 ###
 #CREATE (POST) a tour.
-POST http://localhost:3000/api/v1/tours
+POST http://localhost:3000/api/v1/users
 content-type: application/json
 
 {
@@ -30,6 +30,14 @@ content-type: application/json
 }
 
 ###
-#GET one tour
+#GET one user
 
-GET http://localhost:3000/api/v1/tours/99
+GET http://localhost:3000/api/v1/users/9
+
+###
+#PATCH the user
+PATCH http://localhost:3000/api/v1/users/9
+
+###
+#DELETE the userr
+DELETE  http://localhost:3000/api/v1/users/9

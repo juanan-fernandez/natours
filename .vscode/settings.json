@@ -6,5 +6,6 @@
    "prettier.singleQuote": true,
    "prettier.tabWidth": 3,
    "prettier.trailingComma": "all",
-   "prettier.useTabs": true
+   "prettier.useTabs": true,
+   "prettier.arrowParens": "avoid"
 }
