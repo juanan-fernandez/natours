@@ -1,11 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
+const path = require('path');
 
 const app = express();
 
 //Middlewares
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'dev') app.use(morgan('dev'));
 app.use(express.json()); //middleware para parsear el body que llega en cada req
+app.use(express.static(path.join(__dirname, 'public'))); //definir la ruta dónde están los ficheros estáticos
 
 //importar RUTAS
 const tourRoutes = require('./routes/tours');
