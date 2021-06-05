@@ -7,7 +7,7 @@ POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Senda Camille",
+        "name": "Viajico USA",
         "duration": 5,
         "maxGroupSize": 8,
         "difficulty": "hard",
@@ -30,14 +30,32 @@ content-type: application/json
 }
 
 ###
+#CREATE MINI TOUR
+
+POST http://localhost:3000/api/v1/tours
+content-type: application/json
+
+{
+        "name": "USA",
+        "rating": 4.7,
+        "price": 1250
+}
+
+###
 #GET one tour
 
-GET http://localhost:3000/api/v1/tours/9
+GET http://localhost:3000/api/v1/tours/60bb4b11c82cba1cd4337494
 
 ###
 #PATCH the tour
-PATCH http://localhost:3000/api/v1/tours/1
+PATCH http://localhost:3000/api/v1/tours/60bb52df531c8c5c747fc1ff
+Content-Type: application/json
+
+{
+  "name": "Azores",
+  "price": "test"
+}
 
 ###
 #DELETE the tour
-DELETE  http://localhost:3000/api/v1/tours/9
+DELETE  http://localhost:3000/api/v1/tours/60bb4b11c82cba1cd4337494

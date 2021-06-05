@@ -3,14 +3,8 @@ const toursCtlr = require('../controllers/tour');
 
 const router = express.Router();
 
-// router.param('id', (req, res, next, val) => {
-// 	//podemos usar este middleware para validar el id que recibimos:
-//    //como en el ejemplo más abajo
-// 	console.log(`Id is ${val}`);
-// 	next();
-// });
-
-router.param('id', toursCtlr.checkId);
+//podemos usar este middleware para validar el id que recibimos por parámetro
+//router.param('id', toursCtlr.checkId);
 
 //Routes
 // app.get('/api/v1/tours', getAllTours);

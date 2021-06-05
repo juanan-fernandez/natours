@@ -13,6 +13,7 @@ const tourSchema = new mongoose.Schema({
 	price: {
 		type: Number,
 		required: [true, 'The tour must have a price greater than zero.'],
+		min: 1,
 	},
 });
 
