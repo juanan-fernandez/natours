@@ -1,5 +1,5 @@
 const express = require('express');
-const toursCtlr = require('../controllers/tours');
+const toursCtlr = require('../controllers/tour');
 
 const router = express.Router();
 
@@ -20,7 +20,14 @@ router.param('id', toursCtlr.checkId);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //otra forma de hacerlo
-router.route('/').get(toursCtlr.getAllTours).post(toursCtlr.checkBodyTour, toursCtlr.createTour);
-router.route('/:id').get(toursCtlr.getTour).patch(toursCtlr.updateTour).delete(toursCtlr.deleteTour);
+router
+	.route('/')
+	.get(toursCtlr.getAllTours)
+	.post(toursCtlr.checkBodyTour, toursCtlr.createTour);
+router
+	.route('/:id')
+	.get(toursCtlr.getTour)
+	.patch(toursCtlr.updateTour)
+	.delete(toursCtlr.deleteTour);
 
 module.exports = router;

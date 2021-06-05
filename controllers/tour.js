@@ -1,14 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const Tour = require('../models/tour');
 
-const fileName = path.join(__dirname, '..', 'dev-data', 'data', 'tours-simple.json');
-const tours = JSON.parse(fs.readFileSync(fileName));
+// const fileName = path.join(__dirname, '..', 'dev-data', 'data', 'tours-simple.json');
+// const tours = JSON.parse(fs.readFileSync(fileName));
 
 //Routes handlers
 
 const checkId = (req, res, next, val) => {
 	const tourId = req.params.id * 1;
-	const tour = tours.find(t => t.id === tourId);
+	const tour = tours.find((t) => t.id === tourId);
 	if (!tour) {
 		return res.status(404).json({
 			status: 'Not found',
@@ -51,7 +52,7 @@ const createTour = (req, res, next) => {
 	const newId = tours[tours.length - 1].id + 1;
 	const newTour = { id: newId, ...req.body };
 	tours.push(newTour);
-	fs.writeFile(fileName, JSON.stringify(tours), err => {
+	fs.writeFile(fileName, JSON.stringify(tours), (err) => {
 		if (err) {
 			throw new Error('Error saving data!');
 		}
@@ -64,7 +65,7 @@ const createTour = (req, res, next) => {
 
 const getTour = (req, res, next) => {
 	const tourId = req.params.id * 1;
-	const tour = tours.find(t => t.id === tourId);
+	const tour = tours.find((t) => t.id === tourId);
 	//no compruebo que he hallado el tour con ese id porque lo hago con el middleware checkId arriba del todo
 	res.status(200).json({
 		status: 'Success',
@@ -75,7 +76,7 @@ const getTour = (req, res, next) => {
 
 const updateTour = (req, res, next) => {
 	const tourId = req.params.id * 1;
-	const tour = tours.find(t => t.id === tourId);
+	const tour = tours.find((t) => t.id === tourId);
 	res.status(200).json({
 		status: 'Success',
 		data: { tour: 'Updated tour' },
@@ -85,11 +86,11 @@ const updateTour = (req, res, next) => {
 const deleteTour = (req, res, next) => {
 	let deletedCount = 0;
 	const tourId = req.params.id * 1;
-	let idx = tours.findIndex(t => t.id === tourId);
+	let idx = tours.findIndex((t) => t.id === tourId);
 	while (idx != -1) {
 		deletedCount++;
 		tours.splice(idx, 1);
-		idx = tours.findIndex(t => t.id === tourId);
+		idx = tours.findIndex((t) => t.id === tourId);
 	}
 
 	if (!deletedCount) {
@@ -104,4 +105,12 @@ const deleteTour = (req, res, next) => {
 	});
 };
 
-module.exports = { checkBodyTour, checkId, getAllTours, getTour, createTour, deleteTour, updateTour };
+module.exports = {
+	checkBodyTour,
+	checkId,
+	getAllTours,
+	getTour,
+	createTour,
+	deleteTour,
+	updateTour,
+};
