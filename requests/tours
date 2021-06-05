@@ -7,10 +7,10 @@ POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Viajico USA",
+        "name": "Oregon ",
         "duration": 5,
         "maxGroupSize": 8,
-        "difficulty": "hard",
+        "difficulty": "medium",
         "price": 355,
         "ratingsAverage": 4.7,
         "ratingsQuantity": 37,
@@ -58,4 +58,4 @@ Content-Type: application/json
 
 ###
 #DELETE the tour
-DELETE  http://localhost:3000/api/v1/tours/60bb4b11c82cba1cd4337494
+DELETE  http://localhost:3000/api/v1/tours/60bb61b72d293142f8ad61e8

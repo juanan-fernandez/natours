@@ -83,7 +83,7 @@ const deleteTour = async (req, res, next) => {
 
 		res.status(200).json({
 			status: 'Success',
-			data: { message: 'Deleted ' + tour + ' 1 tour' },
+			data: { message: 'Deleted ' + deleted + ' 1 tour' },
 		});
 	} catch (err) {
 		next(err);
