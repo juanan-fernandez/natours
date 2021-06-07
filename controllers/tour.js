@@ -23,7 +23,33 @@ const checkBodyTour = (req, res, next) => {
 };
 
 const getAllTours = async (req, res, next) => {
-	const tours = await Tour.find({});
+	let queryObj = { ...req.query };
+	const reservadas = ['limit', 'sort', 'page', 'fields'];
+	reservadas.forEach((el) => delete queryObj[el]);
+	//filtrado con operadores gt, gte, lt, lte
+	let queryStr = JSON.stringify(queryObj);
+
+	queryStr = queryStr.replace(/\b(lt|lte|gt|gte)\b/gm, (match) => `$${match}`);
+
+	let query = Tour.find(JSON.parse(queryStr));
+
+	//ordenado de resultados
+	if (req.query.sort) {
+		const sortBy = req.query.sort.split(',').join(' ');
+		query = query.sort(sortBy);
+	} else {
+		query = query.sort('createdAt');
+	}
+
+	//campos a mostrar
+	if (req.query.fields) {
+		const fieldsSelected = req.query.fields.split(',').join(' ');
+		query = query.select(fieldsSelected);
+	} else {
+		query = query.select('-__v'); //excluir campos especiales de mongo
+	}
+
+	const tours = await query;
 	res.status(200).json({
 		status: 'Success',
 		results: tours.length,

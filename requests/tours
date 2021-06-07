@@ -2,6 +2,30 @@
 GET  http://localhost:3000/api/v1/tours
 
 ###
+#GET tours filtrado por uno o más campos
+GET http://localhost:3000/api/v1/tours/?difficulty=medium&price=397
+
+###
+#GET filtrado con operadores gt, gte, lt, lte
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000
+
+###
+#GET ordenado de resultados
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=price
+
+###
+#GET ordenado por 2 campos
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=price,ratingsQuantity
+
+###
+#GET ordenado descendente
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=-price
+
+###
+#GET obtener los campos deseados
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name,price,ratingsQuantity
+
+###
 #CREATE (POST) a tour.
 POST http://localhost:3000/api/v1/tours
 content-type: application/json
@@ -29,17 +53,7 @@ content-type: application/json
         ]
 }
 
-###
-#CREATE MINI TOUR
 
-POST http://localhost:3000/api/v1/tours
-content-type: application/json
-
-{
-        "name": "USA",
-        "rating": 4.7,
-        "price": 1250
-}
 
 ###
 #GET one tour
