@@ -1,5 +1,5 @@
 const Tour = require('../models/tour');
-
+const QueryBuilder = require('../utils/queryBuilder');
 //Routes handlers
 
 const checkBodyTour = (req, res, next) => {
@@ -22,34 +22,44 @@ const checkBodyTour = (req, res, next) => {
 	next();
 };
 
+const aliasTopFive = (req, res, next) => {
+	req.query.limit = 5;
+	req.query.sort = 'price,-ratingsAverage';
+	req.query.fields = 'name,price,ratingsAverage';
+	next();
+};
+
 const getAllTours = async (req, res, next) => {
-	let queryObj = { ...req.query };
-	const reservadas = ['limit', 'sort', 'page', 'fields'];
-	reservadas.forEach((el) => delete queryObj[el]);
-	//filtrado con operadores gt, gte, lt, lte
-	let queryStr = JSON.stringify(queryObj);
+	const newQuery = new QueryBuilder(Tour.find(), req.query);
+	//número de documentos que devolverá la query
+	//const nDocs = await Tour.find(JSON.parse(queryStr)).countDocuments();
 
-	queryStr = queryStr.replace(/\b(lt|lte|gt|gte)\b/gm, (match) => `$${match}`);
+	// //ordenado de resultados
+	// if (req.query.sort) {
+	// 	const sortBy = req.query.sort.split(',').join(' ');
+	// 	query = query.sort(sortBy);
+	// } else {
+	// 	query = query.sort('createdAt');
+	// }
 
-	let query = Tour.find(JSON.parse(queryStr));
+	// //campos a mostrar
+	// if (req.query.fields) {
+	// 	const fieldsSelected = req.query.fields.split(',').join(' ');
+	// 	query = query.select(fieldsSelected);
+	// } else {
+	// 	query = query.select('-__v'); //excluir campos especiales de mongo
+	// }
 
-	//ordenado de resultados
-	if (req.query.sort) {
-		const sortBy = req.query.sort.split(',').join(' ');
-		query = query.sort(sortBy);
-	} else {
-		query = query.sort('createdAt');
-	}
+	// //paginacion: por defecto mostramos como mucho 100 registros
+	// const limit = 1 * req.query.limit || 100;
+	// let page = 1 * req.query.page || 1;
 
-	//campos a mostrar
-	if (req.query.fields) {
-		const fieldsSelected = req.query.fields.split(',').join(' ');
-		query = query.select(fieldsSelected);
-	} else {
-		query = query.select('-__v'); //excluir campos especiales de mongo
-	}
+	// if (page * limit > nDocs) {
+	// 	page = +(nDocs / limit).toFixed() + 1 * (nDocs % limit ? 1 : 0);
+	// }
+	// query = query.skip(limit * page - limit).limit(limit);
 
-	const tours = await query;
+	const tours = await newQuery.query;
 	res.status(200).json({
 		status: 'Success',
 		results: tours.length,
@@ -118,6 +128,7 @@ const deleteTour = async (req, res, next) => {
 
 module.exports = {
 	checkBodyTour,
+	aliasTopFive,
 	getAllTours,
 	getTour,
 	createTour,

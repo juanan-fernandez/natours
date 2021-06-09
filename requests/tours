@@ -11,7 +11,7 @@ GET http://localhost:3000/api/v1/tours/?price[gte]=1000
 
 ###
 #GET ordenado de resultados
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=price
+GET http://localhost:3000/api/v1/tours/?price[gte]=400&sort=price
 
 ###
 #GET ordenado por 2 campos
@@ -24,6 +24,18 @@ GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=-price
 ###
 #GET obtener los campos deseados
 GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name,price,ratingsQuantity
+
+###
+#GET limitar el número de registros a obtener
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name&limit=3&page=10
+
+###
+#GET, los 5 tours mejor valorados y más baratos
+GET http://localhost:3000/api/v1/tours/?fields=name,price,ratingsAverage&sort=-ratingsAverage,price&limit=5
+
+###
+#GET, misma consulta de arriba, pero con un alias en la ruta
+GET http://localhost:3000/api/v1/tours/top-five
 
 ###
 #CREATE (POST) a tour.

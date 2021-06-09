@@ -14,10 +14,12 @@ const router = express.Router();
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //otra forma de hacerlo
+router.route('/top-five').get(toursCtlr.aliasTopFive, toursCtlr.getAllTours);
 router
 	.route('/')
 	.get(toursCtlr.getAllTours)
 	.post(toursCtlr.checkBodyTour, toursCtlr.createTour);
+
 router
 	.route('/:id')
 	.get(toursCtlr.getTour)
