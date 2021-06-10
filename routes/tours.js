@@ -15,6 +15,8 @@ const router = express.Router();
 
 //otra forma de hacerlo
 router.route('/top-five').get(toursCtlr.aliasTopFive, toursCtlr.getAllTours);
+router.route('/tour-stats').get(toursCtlr.getTourStats);
+router.route('/tour-plan/:year').get(toursCtlr.getMonthPlan);
 router
 	.route('/')
 	.get(toursCtlr.getAllTours)

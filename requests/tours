@@ -27,7 +27,7 @@ GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name,price,rating
 
 ###
 #GET limitar el número de registros a obtener
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name&limit=3&page=10
+GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name&limit=3&page=2
 
 ###
 #GET, los 5 tours mejor valorados y más baratos
@@ -36,6 +36,10 @@ GET http://localhost:3000/api/v1/tours/?fields=name,price,ratingsAverage&sort=-r
 ###
 #GET, misma consulta de arriba, pero con un alias en la ruta
 GET http://localhost:3000/api/v1/tours/top-five
+
+###
+#GET. estadísticas sobre los datos (funciones de agregado)
+GET http://localhost:3000/api/v1/tours/tour-stats
 
 ###
 #CREATE (POST) a tour.

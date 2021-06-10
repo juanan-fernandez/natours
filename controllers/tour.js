@@ -1,7 +1,7 @@
 const Tour = require('../models/tour');
 const QueryBuilder = require('../utils/queryBuilder');
-//Routes handlers
 
+//Routes handlers
 const checkBodyTour = (req, res, next) => {
 	const arrayErrs = [];
 	if (!req.body.name.trim()) {
@@ -24,47 +24,60 @@ const checkBodyTour = (req, res, next) => {
 
 const aliasTopFive = (req, res, next) => {
 	req.query.limit = 5;
-	req.query.sort = 'price,-ratingsAverage';
+	req.query.sort = '-ratingsAverage, price';
 	req.query.fields = 'name,price,ratingsAverage';
 	next();
 };
 
 const getAllTours = async (req, res, next) => {
 	const newQuery = new QueryBuilder(Tour.find(), req.query);
-	//número de documentos que devolverá la query
-	//const nDocs = await Tour.find(JSON.parse(queryStr)).countDocuments();
 
-	// //ordenado de resultados
-	// if (req.query.sort) {
-	// 	const sortBy = req.query.sort.split(',').join(' ');
-	// 	query = query.sort(sortBy);
-	// } else {
-	// 	query = query.sort('createdAt');
-	// }
-
-	// //campos a mostrar
-	// if (req.query.fields) {
-	// 	const fieldsSelected = req.query.fields.split(',').join(' ');
-	// 	query = query.select(fieldsSelected);
-	// } else {
-	// 	query = query.select('-__v'); //excluir campos especiales de mongo
-	// }
-
-	// //paginacion: por defecto mostramos como mucho 100 registros
-	// const limit = 1 * req.query.limit || 100;
-	// let page = 1 * req.query.page || 1;
-
-	// if (page * limit > nDocs) {
-	// 	page = +(nDocs / limit).toFixed() + 1 * (nDocs % limit ? 1 : 0);
-	// }
-	// query = query.skip(limit * page - limit).limit(limit);
-
-	const tours = await newQuery.query;
+	const tours = await newQuery.filter().sort().select().paginate().query;
 	res.status(200).json({
 		status: 'Success',
 		results: tours.length,
 		data: { tours: tours },
 	});
+};
+
+const getTourStats = async (req, res, next) => {
+	try {
+		const stats = Tour.aggregate([
+			{ $match: { ratingsAverage: { $gte: 4.5 } } },
+			{
+				$group: {
+					_id: { $toUpper: '$difficulty' },
+					totalTours: { $sum: 1 },
+					numOfRatings: { $sum: '$ratingsQuantity' },
+					avgRating: { $avg: '$ratingsAverage' },
+					avgPrice: { $avg: '$price' },
+					minPrice: { $min: '$price' },
+					maxPrice: { $max: '$price' },
+				},
+			},
+			{
+				$sort: { avgPrice: 1 },
+			},
+		]);
+
+		const results = await stats;
+		res.status(200).json({
+			status: 'Success',
+			data: results,
+		});
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
+};
+
+const getMonthPlan = async (req, res, next) => {
+	try {
+		const plan = Tour.aggregate([]);
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
 };
 
 const createTour = async (req, res, next) => {
@@ -130,6 +143,8 @@ module.exports = {
 	checkBodyTour,
 	aliasTopFive,
 	getAllTours,
+	getTourStats,
+	getMonthPlan,
 	getTour,
 	createTour,
 	deleteTour,
