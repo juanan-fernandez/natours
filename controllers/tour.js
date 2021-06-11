@@ -103,7 +103,6 @@ const getMonthPlan = async (req, res, next) => {
 			data: results,
 		});
 	} catch (err) {
-		console.log(err);
 		next(err);
 	}
 };
@@ -118,7 +117,6 @@ const createTour = async (req, res, next) => {
 			data: { tour: doc },
 		});
 	} catch (err) {
-		console.log(err);
 		next(err);
 	}
 };

@@ -8,6 +8,13 @@ const tourSchema = new mongoose.Schema(
 			required: [true, 'The tour must have a name. This field is mandatory'],
 			unique: true,
 			trim: true,
+			minLength: [5, 'The name must have 6 characters at least'],
+			validate: {
+				validator: function (value) {
+					return /^[\D]+$/.test(value);
+				},
+				message: 'The name must only contains letters.',
+			},
 		},
 		slug: String,
 		duration: {
@@ -25,6 +32,7 @@ const tourSchema = new mongoose.Schema(
 		difficulty: {
 			type: String,
 			required: [true, 'The tour must have a difficulty'],
+			lowercase: true,
 			enum: {
 				values: ['easy', 'medium', 'difficult'],
 				message: 'Difficulty is either: easy, medium, difficult',
@@ -49,7 +57,17 @@ const tourSchema = new mongoose.Schema(
 			required: [true, 'The tour must have a price greater than zero.'],
 			min: 1,
 		},
-		priceDiscount: Number,
+		priceDiscount: {
+			type: Number,
+			validate: {
+				validator: function (value) {
+					//this solamente es válido en la creación de nuevos documnentos (no update)
+					return this.price > value;
+				},
+				message: (props) =>
+					`The discount of the tour (${props.value}) must be lower than the price`,
+			},
+		},
 		summary: {
 			type: String,
 			trim: true,

@@ -51,11 +51,12 @@ POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Oregon the Secret wild Coast",
+        "name": "Ruta11111222",
         "duration": 5,
         "maxGroupSize": 8,
-        "difficulty": "medium",
+        "difficulty": "MeDium",
         "price": 355,
+        "priceDiscount":10,
         "ratingsAverage": 4.7,
         "ratingsQuantity": 37,
         "summary": "Pirineo Navarro National Park",
