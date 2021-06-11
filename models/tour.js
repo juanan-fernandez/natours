@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema(
 	{
@@ -8,7 +9,8 @@ const tourSchema = new mongoose.Schema(
 			unique: true,
 			trim: true,
 		},
-		durations: {
+		slug: String,
+		duration: {
 			type: Number,
 			requiered: [true, 'The tour must have a duration of 1 day min.'],
 			min: 1,
@@ -63,11 +65,47 @@ const tourSchema = new mongoose.Schema(
 		},
 		images: [String],
 		startDates: [Date],
+		vip: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		timestamps: true,
+		toJSON: { virtuals: true },
+		toObject: { virtuals: true },
 	},
 );
+
+tourSchema.pre('save', function (next) {
+	this.slug = slugify(this.name, { lower: true });
+	next();
+});
+
+//query middleware
+//tourSchema.pre('find', function (next) {
+tourSchema.pre(/^find/, function (next) {
+	//todas las instrucciones que empiezen por find (find, findOne,...)
+	this.find({ vip: { $ne: true } });
+	this.startQuery = Date.now();
+	next();
+});
+
+tourSchema.post(/^find/, function (next) {
+	console.log(`The query has finished in ${Date.now() - this.startQuery} ms.`);
+});
+
+//Aggregation middleware
+tourSchema.pre('aggregate', function (next) {
+	this.pipeline().unshift({ $match: { vip: { $ne: true } } });
+	console.log(this.pipeline());
+	next();
+});
+
+//Virtual
+tourSchema.virtual('durationWeeks').get(function () {
+	return this.duration / 7;
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 

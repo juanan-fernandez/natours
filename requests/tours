@@ -7,7 +7,7 @@ GET http://localhost:3000/api/v1/tours/?difficulty=medium&price=397
 
 ###
 #GET filtrado con operadores gt, gte, lt, lte
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000
+GET http://localhost:3000/api/v1/tours/?price[gte]=300
 
 ###
 #GET ordenado de resultados
@@ -42,12 +42,16 @@ GET http://localhost:3000/api/v1/tours/top-five
 GET http://localhost:3000/api/v1/tours/tour-stats
 
 ###
+#GET. planificacion tours por meses (funciones de agregado)
+GET http://localhost:3000/api/v1/tours/tour-plan/2021
+
+###
 #CREATE (POST) a tour.
 POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Oregon ",
+        "name": "Oregon the Secret wild Coast",
         "duration": 5,
         "maxGroupSize": 8,
         "difficulty": "medium",
@@ -66,7 +70,8 @@ content-type: application/json
           "2022-08-11,10:00",
           "2022-09-20,10:00",
           "2022-10-05,10:00"
-        ]
+        ],
+        "vip":true
 }
 
 
@@ -88,4 +93,4 @@ Content-Type: application/json
 
 ###
 #DELETE the tour
-DELETE  http://localhost:3000/api/v1/tours/60bb61b72d293142f8ad61e8
+DELETE  http://localhost:3000/api/v1/tours/60c34a8ada21ba60347be51f
