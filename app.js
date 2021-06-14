@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 
 const appError = require('./utils/appError');
-const globalErrHander = require('./controllers/error');
+const globalErrHandler = require('./controllers/error');
 
 //Middlewares
 if (process.env.NODE_ENV === 'dev') app.use(morgan('dev'));
@@ -25,6 +25,6 @@ app.all('*', (req, res, next) => {
 });
 
 //middleware para gestion de errores
-app.use(globalErrHander);
+app.use(globalErrHandler);
 
 module.exports = app;

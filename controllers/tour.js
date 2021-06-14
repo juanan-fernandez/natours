@@ -1,5 +1,6 @@
 const Tour = require('../models/tour');
 const QueryBuilder = require('../utils/queryBuilder');
+const appError = require('../utils/appError');
 
 //Routes handlers
 const checkBodyTour = (req, res, next) => {
@@ -66,7 +67,6 @@ const getTourStats = async (req, res, next) => {
 			data: results,
 		});
 	} catch (err) {
-		console.log(err);
 		next(err);
 	}
 };
@@ -124,6 +124,11 @@ const createTour = async (req, res, next) => {
 const getTour = async (req, res, next) => {
 	try {
 		const tour = await Tour.findById(req.params.id);
+		if (!tour) {
+			return next(
+				new appError(`No tour found with the id ${req.params.id}`, 404),
+			);
+		}
 		res.status(200).json({
 			status: 'Success',
 			requested: tour._id,
@@ -135,13 +140,16 @@ const getTour = async (req, res, next) => {
 };
 
 const updateTour = async (req, res, next) => {
-	const tourId = req.params.id;
 	try {
 		const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 			runValidators: true,
 		});
-		console.log(tour);
+
+		if (!tour) {
+			return next(new appError(`No tour found with that id.`, 404));
+		}
+
 		res.status(200).json({
 			status: 'Success',
 			requested: tour._id,
@@ -155,7 +163,9 @@ const updateTour = async (req, res, next) => {
 const deleteTour = async (req, res, next) => {
 	try {
 		const deleted = await Tour.findByIdAndDelete(req.params.id);
-
+		if (!deleted) {
+			return next(new appError(`No tour found with that id.`, 404));
+		}
 		res.status(200).json({
 			status: 'Success',
 			data: { message: 'Deleted ' + deleted + ' 1 tour' },
