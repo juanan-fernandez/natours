@@ -51,7 +51,7 @@ POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Ruta11111222",
+        "name": "Ruta de las brañas",
         "duration": 5,
         "maxGroupSize": 8,
         "difficulty": "MeDium",
