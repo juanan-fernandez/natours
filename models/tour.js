@@ -8,7 +8,7 @@ const tourSchema = new mongoose.Schema(
 			required: [true, 'The tour must have a name. This field is mandatory'],
 			unique: true,
 			trim: true,
-			minLength: [5, 'The name must have 6 characters at least'],
+			minLength: [10, 'The name must have 10 characters at least'],
 			validate: {
 				validator: function (value) {
 					return /^[\D]+$/.test(value);
@@ -86,6 +86,7 @@ const tourSchema = new mongoose.Schema(
 		vip: {
 			type: Boolean,
 			default: false,
+			select: false, //si no queremos que este campo aparezca en ninguna busqueda
 		},
 	},
 	{
@@ -100,11 +101,12 @@ tourSchema.pre('save', function (next) {
 	next();
 });
 
-//query middleware
+//query middleware.  ojo con esto,.. me está filtrando ya los que vip <>true
 //tourSchema.pre('find', function (next) {
 tourSchema.pre(/^find/, function (next) {
 	//todas las instrucciones que empiezen por find (find, findOne,...)
-	this.find({ vip: { $ne: true } });
+	//this.find({ vip: { $ne: true } }); //pre-filtro (video 105)
+	this.find();
 	this.startQuery = Date.now();
 	next();
 });
@@ -113,7 +115,7 @@ tourSchema.post(/^find/, function (next) {
 	console.log(`The query has finished in ${Date.now() - this.startQuery} ms.`);
 });
 
-//Aggregation middleware
+//Aggregation middleware.
 tourSchema.pre('aggregate', function (next) {
 	this.pipeline().unshift({ $match: { vip: { $ne: true } } });
 	console.log(this.pipeline());
