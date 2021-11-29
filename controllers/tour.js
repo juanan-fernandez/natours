@@ -30,10 +30,44 @@ const aliasTopFive = (req, res, next) => {
 	next();
 };
 
+//PRUEBAS
+//me creo esto para pruebas
+const getTheTours = async (req, res, next) => {
+	const newQuery = new QueryBuilder(Tour.find(), req.query);
+
+	//const q2 = countQuery.filter().countDocs().query;
+	const tours = await newQuery.filter().sort().select().paginate().query;
+	const ndocs = await newQuery.countDocs().query;
+	const tours2 = await newQuery.filter().query;
+
+	res.status(200).json({
+		status: 'Success',
+		results: tours.length,
+		nDocs: ndocs,
+		data: { tours: [] },
+		data2: { tours2: tours2 },
+	});
+};
+
+const getNumberOfDocs = async (req, res, next) => {
+	//req.query.price = 1450;
+	const q = Tour.find();
+	//q.model = Tour;
+	q.countDocuments(req.query, (err, res) => {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log(res);
+		}
+	});
+};
+///////////FIN PRUEBAS///////////////////////////////////////////
+
 const getAllTours = async (req, res, next) => {
 	const newQuery = new QueryBuilder(Tour.find(), req.query);
 
 	const tours = await newQuery.filter().sort().select().paginate().query;
+
 	res.status(200).json({
 		status: 'Success',
 		results: tours.length,
@@ -164,7 +198,9 @@ const deleteTour = async (req, res, next) => {
 	try {
 		const deleted = await Tour.findByIdAndDelete(req.params.id);
 		if (!deleted) {
-			return next(new appError(`No tour found with that id.`, 404));
+			return next(
+				new appError(`No tour found with that id: ${req.params.id}.`, 404),
+			);
 		}
 		res.status(200).json({
 			status: 'Success',
@@ -176,6 +212,8 @@ const deleteTour = async (req, res, next) => {
 };
 
 module.exports = {
+	getNumberOfDocs,
+	getTheTours,
 	checkBodyTour,
 	aliasTopFive,
 	getAllTours,

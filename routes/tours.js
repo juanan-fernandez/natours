@@ -17,10 +17,10 @@ const router = express.Router();
 router.route('/top-five').get(toursCtlr.aliasTopFive, toursCtlr.getAllTours);
 router.route('/tour-stats').get(toursCtlr.getTourStats);
 router.route('/tour-plan/:year').get(toursCtlr.getMonthPlan);
-router
-	.route('/')
-	.get(toursCtlr.getAllTours)
-	.post(toursCtlr.checkBodyTour, toursCtlr.createTour);
+router.route('/').get(toursCtlr.getAllTours).post(toursCtlr.createTour);
+//Pruebas
+router.route('/test').get(toursCtlr.getTheTours);
+router.route('/count').get(toursCtlr.getNumberOfDocs);
 
 router
 	.route('/:id')

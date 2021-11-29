@@ -1,0 +1,26 @@
+// Line breaks for legibility only
+
+POST
+https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize?
+client_id=5e443928-24ff-4b9f-ad78-f5ba90e6f533
+&response_type=code
+&redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient
+&response_mode=query
+&scope=offline_access%20user.read%20mail.read
+&state=12345
+
+###
+POST 
+https://login.microsoftonline.com/417dd149-5331-4647-a9d3-7d638d8301c4/oauth2/v2.0/token
+
+###
+POST https://login.microsoftonline.com/smresinas.onmicrosoft.com/oauth2/v2.0/token
+Content-Type: application/x-www-form-urlencoded
+
+{
+   client_id=96c56dcf-4653-428b-8291-c19417badc2f
+   &scope=https://graph.microsoft.com/.default
+   &client_secret='88e63a8d-44eb-4575-aebd-300fd9e6fc13'
+   &grant_type=client_credentials
+}
+###

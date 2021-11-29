@@ -16,6 +16,11 @@ app.use(express.static(path.join(__dirname, 'public'))); //definir la ruta dónd
 const tourRoutes = require('./routes/tours');
 const userRoutes = require('./routes/users');
 
+// app.use('/', (req, res, next) => {
+// 	console.log(x);
+// 	//res.status(200).json({ status: 'Server listening...' });
+// 	next();
+// });
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
 

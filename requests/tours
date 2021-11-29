@@ -3,11 +3,14 @@ GET  http://localhost:3000/api/v1/tours
 
 ###
 #GET tours filtrado por uno o más campos
-GET http://localhost:3000/api/v1/tours/?difficulty=medium&price=397
+GET http://localhost:3000/api/v1/tours/?difficulty=easy
 
 ###
 #GET filtrado con operadores gt, gte, lt, lte
-GET http://localhost:3000/api/v1/tours/?price[gte]=300
+GET http://localhost:3000/api/v1/tours/test/?price[gte]=800
+
+###
+GET http://localhost:3000/api/v1/tours/count/?price=1450
 
 ###
 #GET ordenado de resultados
@@ -51,15 +54,15 @@ POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Ruta de las brañas",
+        "name": "Sierra Espuña",
         "duration": 5,
         "maxGroupSize": 8,
-        "difficulty": "MeDium",
-        "price": 355,
+        "difficulty": "easy",
+        "price": 1450,
         "priceDiscount":10,
         "ratingsAverage": 4.7,
         "ratingsQuantity": 37,
-        "summary": "Pirineo Navarro National Park",
+        "summary": "Alhama de Murcia",
         "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "imageCover": "tour-1-cover.jpg",
         "images": [
@@ -75,11 +78,13 @@ content-type: application/json
         "vip":true
 }
 
-
+###
+#Retrive all tours/
+GET  http://localhost:3000/api/v1/tours/test
 
 ###
 #GET one tour by id
-GET http://localhost:3000/api/v1/tours/60bb4b11c82cba1cd4337494
+GET http://localhost:3000/api/v1/tours/6196a78c7026962950d2cfdf
 
 ###
 #PATCH the tour
@@ -93,4 +98,4 @@ Content-Type: application/json
 
 ###
 #DELETE the tour
-DELETE  http://localhost:3000/api/v1/tours/60c34a8ada21ba60347be51f
+DELETE  http://localhost:3000/api/v1/tours/60c3453026b2f303f0013018

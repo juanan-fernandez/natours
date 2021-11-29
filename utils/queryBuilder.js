@@ -1,3 +1,5 @@
+const mongo = require('mongoose');
+
 class QueryBuilder {
 	constructor(query, queryString) {
 		//en query recibo el objeto que provee el modelo de mongo
@@ -7,7 +9,7 @@ class QueryBuilder {
 		this.nDocs = 0;
 	}
 
-	filter() {
+	getQueryStr() {
 		let queryObj = { ...this.queryString };
 		//eliminar las palabras claves de la consulta
 		const keyWords = ['sort', 'limit', 'fields', 'page'];
@@ -19,7 +21,17 @@ class QueryBuilder {
 			/\b(lt|lte|gt|gte)\b/g,
 			(match) => `$${match}`,
 		);
-		this.query = this.query.find(JSON.parse(queryStr));
+		return queryStr;
+	}
+
+	filter() {
+		this.query = this.query.find(JSON.parse(this.getQueryStr()));
+		//this.countDocs();
+		return this;
+	}
+
+	countDocs() {
+		this.query = this.query.countDocuments(JSON.parse(this.getQueryStr()));
 		return this;
 	}
 
@@ -37,15 +49,17 @@ class QueryBuilder {
 		if (this.queryString.fields) {
 			const fields = this.queryString.fields.split(',').join(' ');
 			this.query = this.query.select(fields);
+		} else {
+			this.query = this.query.select('-__v'); //excluir un campo
 		}
 		return this;
 	}
 
 	paginate() {
 		const page = +this.queryString.page || 1;
-		const limit = +this.queryString.limit || 100;
+		const limit = +this.queryString.limit || 1000;
 		// if (page * limit > nDocs) {
-		// 	page = +(nDocs / limit).toFixed() + 1 * (nDocs % limit ? 1 : 0);
+		// 	page = +(nDocs / limit).toFixed() + (1 * (nDocs % limit ? 1 : 0));
 		// }
 		// query = query.skip(limit * page - limit).limit(limit);
 		const skip = (page - 1) * limit;
