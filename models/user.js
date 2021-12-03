@@ -1,26 +1,34 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');
 
-const tourSchema = new mongoose.Schema(
+//name, email, photo, pass, passconfirm
+const userSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
-			required: [true, 'The tour must have a name. This field is mandatory'],
+			required: [true, 'The user must have a name. This field is mandatory'],
 			unique: true,
 			trim: true,
-			minLength: [10, 'The name must have 10 characters at least'],
+			minLength: [10, 'The user name must have 10 characters at least'],
 			validate: {
 				validator: function (value) {
 					return /^[\D]+$/.test(value);
 				},
-				message: 'The name must only contains letters.',
+				message: 'The user name must only contains letters.',
 			},
 		},
-		slug: String,
-		duration: {
-			type: Number,
-			required: [true, 'The tour must have a duration of 1 day min.'],
-			min: 1,
+		email: {
+			type: String,
+			required: [
+				true,
+				'The user must have a valid e-mail address. This field is mandatory',
+			],
+			unique: true,
+			trim: true,
+		},
+		password: {
+			type: String,
+			required: [true, 'The user must have a password.'],
+			minLength: [8, 'The password must be 8 characters or longer'],
 		},
 		maxGroupSize: {
 			type: Number,
@@ -96,37 +104,6 @@ const tourSchema = new mongoose.Schema(
 	},
 );
 
-tourSchema.pre('save', function (next) {
-	this.slug = slugify(this.name, { lower: true });
-	next();
-});
+const User = mongoose.model('Tour', userSchema);
 
-//query middleware.  ojo con esto,.. me está filtrando ya los que vip <>true
-//tourSchema.pre('find', function (next) {
-tourSchema.pre(/^find/, function (next) {
-	//todas las instrucciones que empiezen por find (find, findOne,...)
-	//this.find({ vip: { $ne: true } }); //pre-filtro (video 105)
-	this.find();
-	this.startQuery = Date.now();
-	next();
-});
-
-tourSchema.post(/^find/, function (next) {
-	console.log(`The query has finished in ${Date.now() - this.startQuery} ms.`);
-});
-
-//Aggregation middleware.
-tourSchema.pre('aggregate', function (next) {
-	this.pipeline().unshift({ $match: { vip: { $ne: true } } });
-	console.log(this.pipeline());
-	next();
-});
-
-//Virtual
-tourSchema.virtual('durationWeeks').get(function () {
-	return this.duration / 7;
-});
-
-const Tour = mongoose.model('Tour', tourSchema);
-
-module.exports = Tour;
+module.exports = User;

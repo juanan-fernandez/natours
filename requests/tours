@@ -54,9 +54,9 @@ POST http://localhost:3000/api/v1/tours
 content-type: application/json
 
 {
-        "name": "Sierra Espuña",
-        "duration": 5,
+        "name": "Sierra del Cadi",
         "maxGroupSize": 8,
+        "duration":1,
         "difficulty": "easy",
         "price": 1450,
         "priceDiscount":10,
@@ -84,7 +84,7 @@ GET  http://localhost:3000/api/v1/tours/test
 
 ###
 #GET one tour by id
-GET http://localhost:3000/api/v1/tours/6196a78c7026962950d2cfdf
+GET http://localhost:3000/api/v1/tours/testttt
 
 ###
 #PATCH the tour
@@ -99,3 +99,8 @@ Content-Type: application/json
 ###
 #DELETE the tour
 DELETE  http://localhost:3000/api/v1/tours/60c3453026b2f303f0013018
+
+###
+#OTRAS PRUEBAS
+GET https://webhooks.click2sync.com/dow/gov/code/dev/middleware/orders.php?env=dev&vendorid=aeNoo7zi
+C2SKey: AS8O05LCD26OABP770TDI83FE7HFS6I2

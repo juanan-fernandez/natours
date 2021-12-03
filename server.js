@@ -4,13 +4,15 @@ require('dotenv').config();
 const app = require('./app');
 const mongol = require('mongoose');
 
-const DB = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWD}@cluster-jonas-node-cour.7btv5.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
-
 //video 122. este código debe ir al principio para los errores síncronos no controlados.
 process.on('uncaughtException', (err) => {
+	console.log('UNCAUGHT REJECTION! Shutting down...');
 	console.log(err.name, err.message);
 	process.exit(1);
 });
+
+//Str conex a nuestra bd en Mongo
+const DB = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWD}@cluster-jonas-node-cour.7btv5.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 
 mongol
 	.connect(DB, {
@@ -34,7 +36,9 @@ const server = app.listen(port, () => {
 
 //video 121
 process.on('unhandledRejection', (err) => {
+	console.log('UNHANDLED REJECTION! Shutting down...');
 	console.log(err.name, err.message);
+
 	server.close(() => {
 		process.exit(1);
 	});

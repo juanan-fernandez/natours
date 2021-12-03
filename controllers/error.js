@@ -5,17 +5,19 @@ const handleCastError = (err) => {
 };
 
 const handleDbError = (err) => {
-	let msg = '';
 	if (err.code === 11000) {
-		msg = JSON.stringify(err.keyValue);
-		msg = `Duplicate field ${msg}`;
-		console.log(msg);
+		//const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+
+		msg = `Duplicate field ${JSON.stringify(
+			err.keyValue,
+		)}. You're trying to save a duplicated key!`;
+
 		return new appError(msg, 400);
 	}
 };
 
 const handleValidation = (err) => {
-	return new appError(err.message, 400);
+	return new appError('No valid data: ' + err.message, 400);
 };
 
 const sendErrDev = (err, res) => {
@@ -37,10 +39,10 @@ const sendErrProduction = (err, res) => {
 	} else {
 		//se refiere a errores de código o errores no controlados
 		//log del error o enviar un e-mail al administrador, etc..
-		//console.log('ERROR: ', err);
+		console.error('ERROR: ', err);
 		res.status(500).json({
 			status: 'error',
-			message: 'ERROR de aplicación!!!',
+			message: 'ERROR (500) de aplicación!!!',
 			error: err,
 		});
 	}
@@ -65,8 +67,9 @@ module.exports = (error, req, res, next) => {
 		//en produccion los mensajes de error al usuario deben ser sencillos sin terminología técnica
 		//console.log(error);
 
-		if (error.name && errTypes[error.name])
+		if (error.name && errTypes[error.name]) {
 			objErr = errTypes[error.name](error);
+		}
 		sendErrProduction(objErr, res);
 	}
 };
