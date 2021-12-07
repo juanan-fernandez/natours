@@ -6,7 +6,7 @@
 	"trailingComma": "all",
 	"quoteProps": "as-needed",
 	"prettier.jsxSingleQuote": true,
-	"prettier.printWidth": 120,
+	"prettier.printWidth": 130,
 	"prettier.arrowParens": "avoid",
 	"semi": true
 }
