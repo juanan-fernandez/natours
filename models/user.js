@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 //name, email, photo, pass, passconfirm
 const userSchema = new mongoose.Schema(
@@ -36,6 +37,7 @@ const userSchema = new mongoose.Schema(
 			required: [true, 'The password confirmation is a mandatory.'],
 			minLength: [8, 'The password confirm must be 8 characters or longer'],
 			validate: {
+				//ESTA VALIDACIÓN SOLAMENTE FUNCIONA CON SAVE()
 				validator: function (value) {
 					return value === this.password;
 				},
@@ -54,6 +56,15 @@ const userSchema = new mongoose.Schema(
 	},
 );
 
-const User = mongoose.model('Tour', userSchema);
+userSchema.pre('save', async function (next) {
+	if (this.isModified('password')) {
+		this.password = await bcrypt.hash(this.password, 12);
+		this.passwordConfirm = undefined; //no guardamos la confirmación del password
+	}
+
+	next();
+});
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

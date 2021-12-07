@@ -3,12 +3,12 @@ GET  http://localhost:3000/api/v1/users
 
 ###
 #CREATE (POST) a user.
-POST http://localhost:3000/api/v1/users
+POST http://localhost:3000/api/v1/users/signup
 content-type: application/json
 
 {
-    "name": "Juan",
-    "email": "perico",
+    "name": "Juanin_y_los_compis",
+    "email": "pericodelaspelotas@gmail.com",
     "password": "theSame999",
     "passwordConfirm":"theSame999"
 }
