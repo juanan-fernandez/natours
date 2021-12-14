@@ -1,5 +1,6 @@
 *.env
 .env
+tests
 #node modules
 node_modules/
 
@@ -29,3 +30,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 _ztest.js
+requests/tests
