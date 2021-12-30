@@ -1,68 +1,74 @@
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxY2RmMGMzMjU0YjdmNTBiMGU1ZTMwZSIsImlhdCI6MTY0MDg4Nzg2MiwiZXhwIjoxNjQxMDYwNjYyfQ.MAE1Eb7j2ho3lUNpOOlLKrcHeclPBlZGNyCyJEof5WU
+
+@version = v1
+
+
 #Retrive all tours/
-GET  http://localhost:3000/api/v1/tours
+GET  {{url}}/{{version}}/tours
+authorization: {{token}} 
 
 ###
 #GET tours filtrado por uno o más campos
-GET http://localhost:3000/api/v1/tours/?difficulty=easy
+GET {{url}}/{{version}}/tours/?difficulty=easy
 
 ###
 #GET filtrado con operadores gt, gte, lt, lte
-GET http://localhost:3000/api/v1/tours/test/?price[gte]=800
+GET {{url}}/{{version}}/tours/test/?price[gte]=800
 
 ###
-GET http://localhost:3000/api/v1/tours/count/?price=1450
+GET {{url}}/{{version}}/tours/count/?price=1450
 
 ###
 #GET ordenado de resultados
-GET http://localhost:3000/api/v1/tours/?price[gte]=400&sort=price
+GET {{url}}/{{version}}/tours/?price[gte]=400&sort=price
 
 ###
 #GET ordenado por 2 campos
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=price,ratingsQuantity
+GET {{url}}/{{version}}/tours/?price[gte]=1000&sort=price,ratingsQuantity
 
 ###
 #GET ordenado descendente
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000&sort=-price
+GET {{url}}/{{version}}/tours/?price[gte]=1000&sort=-price
 
 ###
 #GET obtener los campos deseados
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name,price,ratingsQuantity
+GET {{url}}/{{version}}/tours/?price[gte]=1000&fields=name,price,ratingsQuantity
 
 ###
 #GET limitar el número de registros a obtener
-GET http://localhost:3000/api/v1/tours/?price[gte]=1000&fields=name&limit=3&page=2
+GET {{url}}/{{version}}/tours/?price[gte]=1000&fields=name&limit=3&page=2
 
 ###
 #GET, los 5 tours mejor valorados y más baratos
-GET http://localhost:3000/api/v1/tours/?fields=name,price,ratingsAverage&sort=-ratingsAverage,price&limit=5
+GET {{url}}/{{version}}/tours/?fields=name,price,ratingsAverage&sort=-ratingsAverage,price&limit=5
 
 ###
 #GET, misma consulta de arriba, pero con un alias en la ruta
-GET http://localhost:3000/api/v1/tours/top-five
+GET {{url}}/{{version}}/tours/top-five
 
 ###
 #GET. estadísticas sobre los datos (funciones de agregado)
-GET http://localhost:3000/api/v1/tours/tour-stats
+GET {{url}}/{{version}}/tours/tour-stats
 
 ###
 #GET. planificacion tours por meses (funciones de agregado)
-GET http://localhost:3000/api/v1/tours/tour-plan/2021
+GET {{url}}/{{version}}/tours/tour-plan/2021
 
 ###
 #CREATE (POST) a tour.
-POST http://localhost:3000/api/v1/tours
+POST {{url}}/{{version}}/tours
 content-type: application/json
 
 {
-        "name": "Sierra del Cadi",
+        "name": "Picos desde Goriz",
         "maxGroupSize": 8,
-        "duration":1,
+        "duration":7,
         "difficulty": "easy",
-        "price": 1450,
+        "price": 850,
         "priceDiscount":10,
         "ratingsAverage": 4.7,
         "ratingsQuantity": 37,
-        "summary": "Alhama de Murcia",
+        "summary": "Ref. Goriz",
         "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "imageCover": "tour-1-cover.jpg",
         "images": [
@@ -80,15 +86,15 @@ content-type: application/json
 
 ###
 #Retrive all tours/
-GET  http://localhost:3000/api/v1/tours/test
+GET  {{url}}/{{version}}/tours/test
 
 ###
 #GET one tour by id
-GET http://localhost:3000/api/v1/tours/testttt
+GET {{url}}/{{version}}/tours/testttt
 
 ###
 #PATCH the tour
-PATCH http://localhost:3000/api/v1/tours/60bb52df531c8c5c747fc1ff
+PATCH {{url}}/{{version}}/tours/60bb52df531c8c5c747fc1ff
 Content-Type: application/json
 
 {
@@ -98,5 +104,5 @@ Content-Type: application/json
 
 ###
 #DELETE the tour
-DELETE  http://localhost:3000/api/v1/tours/60c3453026b2f303f0013018
-
+DELETE  {{url}}/{{version}}/tours/60c3453026b2f303f001301d
+authorization: {{token}}

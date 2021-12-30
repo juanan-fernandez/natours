@@ -16,12 +16,18 @@ const handleDbError = (err) => {
 	}
 };
 
+const handleJWTError = (_) =>
+	new appError('ERROR: Sesión de usuario incorrecta', 401);
+
+const handleExpiredToken = (_) =>
+	new appError('ERROR: Su sesión de usuario ha caducado', 401);
+
 const handleValidation = (err) => {
 	return new appError('No valid data: ' + err.message, 400);
 };
 
 const sendErrDev = (err, res) => {
-	console.log('ERROR de Aplicación:');
+	console.log('ERROR de Aplicación:', err.message);
 	res.status(err.statusCode).json({
 		error: err,
 		status: err.status,
@@ -52,6 +58,8 @@ const errTypes = {
 	CastError: (err) => handleCastError(err),
 	MongoError: (err) => handleDbError(err),
 	ValidationError: (err) => handleValidation(err),
+	JsonWebTokenError: (err) => handleJWTError(),
+	TokenExpiredError: (err) => handleExpiredToken(),
 };
 
 module.exports = (error, req, res, next) => {

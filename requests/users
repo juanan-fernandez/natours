@@ -1,27 +1,50 @@
-#Retrive all tours/
+@userid = 61afbcb50b1b191cf4de3a83
+#Retrive all users //dejamos la url a modo de ejemplo
 GET  http://localhost:3000/api/v1/users
 
 ###
 #CREATE (POST) a user.
-POST http://localhost:3000/api/v1/users/signup
+POST {{url}}/{{version}}/users/signup
 content-type: application/json
 
 {
-    "name": "Juanin_y_los_compis",
-    "email": "pericodelaspelotas@gmail.com",
-    "password": "theSame999",
-    "passwordConfirm":"theSame999"
+    "name": "testandomasymas",
+    "email": "siva2@testing.com",
+    "password": "Testando1",
+    "passwordConfirm":"Testando1",
+    "role":"user"
 }
 
 ###
-#GET one user
+# LOGIN USER
+# @name login
+POST {{url}}/{{version}}/users/login
+content-type: application/json
 
-GET http://localhost:3000/api/v1/users/9
+{
+    "email": "juanan@gmail.com",
+    "password": "JuanAntonio"
+}
+
+//@authToken = {{login.response.body.token}}
+
+###
+#GET one user
+GET {{url}}/{{version}}/users/{{userid}}
 
 ###
 #PATCH the user
-PATCH http://localhost:3000/api/v1/users/9
+PATCH {{url}}/{{version}}/users/9
 
 ###
 #DELETE the userr
-DELETE  http://localhost:3000/api/v1/users/9
+DELETE  {{url}}/{{version}}/users/61cded3fb0776a1c50c91a8a
+
+###
+#POST forgot password
+POST  {{url}}/{{version}}/users/forgotpass
+content-type: application/json
+
+{
+    "email": "juanan@gmail.com"
+}

@@ -1,6 +1,6 @@
 const express = require('express');
 const toursCtlr = require('../controllers/tour');
-
+const authCtlr = require('../controllers/auth');
 const router = express.Router();
 
 //podemos usar este middleware para validar el id que recibimos por parámetro
@@ -17,7 +17,8 @@ const router = express.Router();
 router.route('/top-five').get(toursCtlr.aliasTopFive, toursCtlr.getAllTours);
 router.route('/tour-stats').get(toursCtlr.getTourStats);
 router.route('/tour-plan/:year').get(toursCtlr.getMonthPlan);
-router.route('/').get(toursCtlr.getAllTours).post(toursCtlr.createTour);
+router.route('/').get(authCtlr.verifyToken, toursCtlr.getAllTours).post(toursCtlr.createTour);
+
 //Pruebas
 router.route('/test').get(toursCtlr.getTheTours);
 router.route('/count').get(toursCtlr.getNumberOfDocs);
@@ -26,6 +27,6 @@ router
 	.route('/:id')
 	.get(toursCtlr.getTour)
 	.patch(toursCtlr.updateTour)
-	.delete(toursCtlr.deleteTour);
+	.delete(authCtlr.verifyToken, authCtlr.restrictTo('admin', 'leader-guide'), toursCtlr.deleteTour);
 
 module.exports = router;
