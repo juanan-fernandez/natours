@@ -1,16 +1,4 @@
 {
-	"files.autoSave": "onWindowChange",
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"rest-client.environmentVariables": {
-		"$shared": {
-			"url": "http://localhost:3000/api",
-			"version": "v1"
-		},
-		"dev": {
-			"prueba": "v1.0"
-		},
-		"prod": {
-			"prueba": "beta"
-		}
-	}
+	"files.autoSave": "onFocusChange",
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
 }

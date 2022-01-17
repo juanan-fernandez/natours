@@ -1,6 +1,14 @@
 const User = require('../models/user');
 const appErr = require('../utils/appError');
 
+const filterObj = (obj, ...allowedFields) => {
+	const newObj = {};
+	Object.keys(obj).forEach(el => {
+		if (allowedFields.includes(el)) newObj[el] = obj[el];
+	});
+	return newObj;
+};
+
 //handler users
 const getAllUsers = async (req, res, next) => {
 	try {
@@ -33,6 +41,55 @@ const getUser = async (req, res, next) => {
 	}
 };
 
+//esta función la usan los usuarios autenticados para actualizar sus datos
+const updateMe = async (req, res, next) => {
+	if (req.body.password || req.body.passwordConfirm) {
+		return next(
+			new appErr(
+				'Esta ruta no es para actualizar el password. Por favor utiliza la opción Mi password para modificar el password',
+				400,
+			),
+		);
+	}
+	const filteredBody = filterObj(req.body, 'name', 'email'); //por el momento solo dejamos actualizar al usuario el nombre y el email
+	filteredBody['active'] = true;
+	const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, { new: true, runValidators: true });
+	res.status(200).json({ status: 'Success', data: updatedUser });
+};
+
+const deleteMe = async (req, res, next) => {
+	try {
+		const updatedUser = await User.findByIdAndUpdate(
+			req.user.id,
+			{ active: false },
+			{ new: true, runValidators: true },
+		);
+
+		res.status(200).json({
+			status: 'Success',
+			data: `User account for ${updatedUser.name} has been disabled.`,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+const enableUser = async (req, res, next) => {
+	try {
+		const userId = '61cdf0c3254b7f50b0e5e30e';
+		const criteria = { active: false, _id: userId };
+		await User.updateOne(criteria, { active: true });
+
+		res.status(200).json({
+			status: 'Success',
+			data: `User account ${userId} has been enabled.`,
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+//función para que el admin actualize los datos de un usuario.
 const updateUser = (req, res, next) => {
 	const userId = req.params.id;
 	res.status(200).json({
@@ -55,4 +112,4 @@ const deleteUser = async (req, res, next) => {
 	}
 };
 
-module.exports = { getAllUsers, createUser, getUser, updateUser, deleteUser };
+module.exports = { getAllUsers, createUser, getUser, updateMe, deleteMe, enableUser, updateUser, deleteUser };

@@ -1,4 +1,8 @@
 @userid = 61afbcb50b1b191cf4de3a83
+@url = http://localhost:3000
+@version = api/v1
+
+###
 #Retrive all users //dejamos la url a modo de ejemplo
 GET  http://localhost:3000/api/v1/users
 
@@ -15,18 +19,10 @@ content-type: application/json
     "role":"user"
 }
 
+
 ###
-# LOGIN USER
-# @name login
-POST {{url}}/{{version}}/users/login
-content-type: application/json
-
-{
-    "email": "juanan@gmail.com",
-    "password": "JuanAntonio"
-}
-
-//@authToken = {{login.response.body.token}}
+#PATH user information by the user (usuarios autenticados actualizando sus datos)
+PATCH {{url}}/{{version}}/
 
 ###
 #GET one user
@@ -37,14 +33,6 @@ GET {{url}}/{{version}}/users/{{userid}}
 PATCH {{url}}/{{version}}/users/9
 
 ###
-#DELETE the userr
+#DELETE the user
 DELETE  {{url}}/{{version}}/users/61cded3fb0776a1c50c91a8a
 
-###
-#POST forgot password
-POST  {{url}}/{{version}}/users/forgotpass
-content-type: application/json
-
-{
-    "email": "juanan@gmail.com"
-}

@@ -3,14 +3,22 @@ const router = express.Router();
 const usersCtl = require('../controllers/user');
 const authCtl = require('../controllers/auth');
 
-//RUTAS user
-router.route('/').get(usersCtl.getAllUsers).post(usersCtl.createUser);
-router.route('/:id').get(usersCtl.getUser).patch(usersCtl.updateUser).delete(usersCtl.deleteUser);
+//router.get('/mytest', usersCtl.mytest);
 
 //Rutas auth
 router.route('/signup').post(authCtl.signup);
 router.route('/login').post(authCtl.login);
 router.route('/forgotpass').post(authCtl.forgotPassword);
-router.route('/resetpass').post(authCtl.resetPassword);
+router.route('/resetpass/:token').patch(authCtl.resetPassword);
+router.route('/updatepass').patch(authCtl.verifyToken, authCtl.updatePassword);
+//otra forma para las rutas sería la siguiente
+router.patch('/updateMe', authCtl.verifyToken, usersCtl.updateMe);
+router.delete('/deleteMe', authCtl.verifyToken, usersCtl.deleteMe);
+router.patch('/enableUser', usersCtl.enableUser);
+
+//RUTAS user
+router.route('/').get(usersCtl.getAllUsers).post(usersCtl.createUser);
+//RUTAS user id
+router.route('/:id').get(usersCtl.getUser).patch(usersCtl.updateUser).delete(usersCtl.deleteUser);
 
 module.exports = router;

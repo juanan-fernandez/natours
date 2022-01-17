@@ -159,9 +159,7 @@ const getTour = async (req, res, next) => {
 	try {
 		const tour = await Tour.findById(req.params.id);
 		if (!tour) {
-			return next(
-				new appError(`No tour found with the id ${req.params.id}`, 404),
-			);
+			return next(new appError(`No tour found with the id ${req.params.id}`, 404));
 		}
 		res.status(200).json({
 			status: 'Success',
@@ -198,13 +196,11 @@ const deleteTour = async (req, res, next) => {
 	try {
 		const deleted = await Tour.findByIdAndDelete(req.params.id);
 		if (!deleted) {
-			return next(
-				new appError(`No tour found with that id: ${req.params.id}.`, 404),
-			);
+			return next(new appError(`No tour found with that id: ${req.params.id}.`, 404));
 		}
 		res.status(200).json({
 			status: 'Success',
-			data: { message: 'Deleted ' + deleted + ' 1 tour' },
+			data: { message: 'Deleted tour with id ' + req.params.id },
 		});
 	} catch (err) {
 		next(err);

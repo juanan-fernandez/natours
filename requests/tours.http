@@ -1,7 +1,7 @@
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxY2RmMGMzMjU0YjdmNTBiMGU1ZTMwZSIsImlhdCI6MTY0MDg4Nzg2MiwiZXhwIjoxNjQxMDYwNjYyfQ.MAE1Eb7j2ho3lUNpOOlLKrcHeclPBlZGNyCyJEof5WU
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxY2RmMGMzMjU0YjdmNTBiMGU1ZTMwZSIsImlhdCI6MTY0MjQzNTExNSwiZXhwIjoxNjQyNjA3OTE1fQ.sC6IF1err6Eadvgr9QoEUztwB5dH7t0NDQMPGA43Q6Y
 
-@version = v1
-
+@url = http://localhost:3000
+@version = api/v1
 
 #Retrive all tours/
 GET  {{url}}/{{version}}/tours
@@ -13,7 +13,7 @@ GET {{url}}/{{version}}/tours/?difficulty=easy
 
 ###
 #GET filtrado con operadores gt, gte, lt, lte
-GET {{url}}/{{version}}/tours/test/?price[gte]=800
+GET {{url}}/{{version}}/tours/test/?price[gte]=1800
 
 ###
 GET {{url}}/{{version}}/tours/count/?price=1450
@@ -56,11 +56,12 @@ GET {{url}}/{{version}}/tours/tour-plan/2021
 
 ###
 #CREATE (POST) a tour.
+# @name createTour
 POST {{url}}/{{version}}/tours
-content-type: application/json
+Content-Type: application/json
 
 {
-        "name": "Picos desde Goriz",
+        "name": "Picos desde Goriz a la tuti zpiruti",
         "maxGroupSize": 8,
         "duration":7,
         "difficulty": "easy",
@@ -69,7 +70,7 @@ content-type: application/json
         "ratingsAverage": 4.7,
         "ratingsQuantity": 37,
         "summary": "Ref. Goriz",
-        "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "description": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "imageCover": "tour-1-cover.jpg",
         "images": [
           "tour-1-1.jpg",
@@ -84,13 +85,18 @@ content-type: application/json
         "vip":true
 }
 
+@tourId = {{createTour.response.body.$.status}}
+
 ###
-#Retrive all tours/
+#Retrive all tours sin necesidad de token/
 GET  {{url}}/{{version}}/tours/test
 
 ###
 #GET one tour by id
-GET {{url}}/{{version}}/tours/testttt
+# @name onetour
+GET {{url}}/{{version}}/tours/60c3453026b2f303f001301a
+
+@tourId2 = {{onetour.response.body.$.data.tour.id}}
 
 ###
 #PATCH the tour
@@ -104,5 +110,5 @@ Content-Type: application/json
 
 ###
 #DELETE the tour
-DELETE  {{url}}/{{version}}/tours/60c3453026b2f303f001301d
+DELETE  {{url}}/{{version}}/tours/{{tourId2}}
 authorization: {{token}}
