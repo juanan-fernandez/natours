@@ -98,10 +98,11 @@ const updateUser = (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
-	const userId = req.params.id;
 	try {
-		const user = await User.findByIdAndDelete(userId);
+		const user = await User.findByIdAndDelete(req.params.id);
 		if (!user) return next(new appErr('El usuario solicitado no existe en la BD'), 400);
+
+		user.password = undefined; //quitar password de la respuesta
 		res.status(200).json({
 			status: 'Success',
 			result: `User ${user.name} deleted.`,

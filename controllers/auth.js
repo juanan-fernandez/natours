@@ -17,12 +17,19 @@ const getToken = payload => {
 //se genera el token y se envía una respuesta con los datos del usuario
 const logInUser = (user, statusCode, res) => {
 	const token = getToken({ id: user._id });
-	const { password, ...userInfo } = user._doc; //hago esto para quitar el password de la respuesta
-
-	res.status(200).json({
+	//const { password, ...userInfo } = user._doc; //hago esto para quitar el password de la respuesta
+	//Tengo que usar el valor JWT_COOKIE_EXPIRES porque usa diferente formato de JWT_EXPIRES
+	const jwtCookieOptions = {
+		expiresIn: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'prod',
+	};
+	//antes de enviar el usuario, quito el password del objeto
+	user.password = undefined;
+	res.cookie('jwt', token, jwtCookieOptions).status(200).json({
 		status: 'Success',
 		token,
-		data: { userInfo },
+		data: { user },
 	});
 };
 
@@ -181,7 +188,6 @@ const updatePassword = async (req, res, next) => {
 		if (!user || !(await user.validatePassword(req.body.oldPassword, user.password))) {
 			return next(new appErr('ERROR: El password orignal no es válido'), 401);
 		}
-		console.log('updatepass');
 		//cambiar el password
 		user.password = req.body.password;
 		user.passwordConfirm = req.body.passwordConfirm;
