@@ -1,7 +1,21 @@
 const express = require('express');
 const toursCtlr = require('../controllers/tour');
 const authCtlr = require('../controllers/auth');
+const reviewRoutes = require('./reviews');
+
 const router = express.Router();
+
+//VIDEO 158
+//rutas anidadas para las reviews (para crear una review dentro de un tour)
+router.use('/:tourId/reviews', reviewRoutes);
+
+//lo siguiente también sería válido,. .pero es mejor tener las rutas en un único fichero de rutas
+// router
+// 	.route('/:tourId/reviews')
+// 	.post(authCtlr.verifyToken, authCtlr.restrictTo('user'), reviewCtl.postReview)
+// 	.get(reviewCtl.getReviews);
+// //one review
+// router.route('/:tourId/reviews/:id').get(reviewCtl.getOneReview);
 
 //podemos usar este middleware para validar el id que recibimos por parámetro
 //router.param('id', toursCtlr.checkId);

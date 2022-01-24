@@ -1,7 +1,7 @@
 //const fs = require('fs');
 const mongo = require('mongoose');
 const Tour = require('../../models/tour');
-const jsonData = require('./tours-simple.json');
+const jsonData = require('./tours.json');
 
 require('dotenv').config();
 
@@ -15,7 +15,7 @@ mongo
 		useUnifiedTopology: true,
 		useNewUrlParser: true,
 	})
-	.then((_) => {
+	.then(_ => {
 		return Tour.deleteMany({})
 			.then(() => {
 				Tour.insertMany(jsonData, (err, result) => {
@@ -27,7 +27,7 @@ mongo
 					process.exit();
 				});
 			})
-			.catch((err) => {
+			.catch(err => {
 				console.log(err);
 			});
 	});

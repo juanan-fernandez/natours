@@ -52,9 +52,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 //importar RUTAS
 const tourRoutes = require('./routes/tours');
 const userRoutes = require('./routes/users');
+const reviewRoutes = require('./routes/reviews');
 
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 //NOT FOUND ROUTE
 app.all('*', (req, res, next) => {

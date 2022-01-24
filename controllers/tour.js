@@ -157,7 +157,8 @@ const createTour = async (req, res, next) => {
 
 const getTour = async (req, res, next) => {
 	try {
-		const tour = await Tour.findById(req.params.id);
+		const tour = await Tour.findById(req.params.id).populate('reviews'); //virtual populate
+		//const tour = await Tour.findById(req.params.id).populate({ path: 'guides', select: 'name email -_id' }); //populate seleccionando campos
 		if (!tour) {
 			return next(new appError(`No tour found with the id ${req.params.id}`, 404));
 		}

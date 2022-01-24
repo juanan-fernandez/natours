@@ -30,4 +30,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 _ztest.js
-requests/tests
+requests/

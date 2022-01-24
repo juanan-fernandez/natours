@@ -87,7 +87,9 @@ const forgotPassword = async (req, res, next) => {
 		//al usar el metodo post es como si estuviera creando un usuario nuevo,.. pero no es el caso. por eso no quiero que valide
 		await user.save({ validateBeforeSave: false });
 		//enviar email al usuario
-		const resetUrl = `${req.protocol}://${req.get('host')}/${process.env.API_VERSION}/users/resetpass/${resetToken}`;
+		const resetUrl = `${req.protocol}://${req.get('host')}/${
+			process.env.API_VERSION
+		}/users/resetpass/${resetToken}`;
 		const htmlMessage = `<p>Hemos recibido una petición para resetear tu password</p>
 									<p>Para reestablecer tu password haz click en el siguiente enlace:</p>
 									<p><a href = ${resetUrl}>${resetUrl}</a></p>
@@ -110,7 +112,10 @@ const forgotPassword = async (req, res, next) => {
 		user.passwordResetToken = undefined; //si no hemos conseguido enviar el e-mail para reestablecer el password, el token ya no es válido.
 		user.passwordResetExpiration = undefined;
 		await user.save({ validateBeforeSave: false });
-		return next(new appErr('ERROR: Ocurrió un error al intentar enviar el e-mail para resetear su password.'), 500);
+		return next(
+			new appErr('ERROR: Ocurrió un error al intentar enviar el e-mail para resetear su password.'),
+			500,
+		);
 	}
 };
 
@@ -155,7 +160,6 @@ const verifyToken = async (req, res, next) => {
 		const freshUser = await User.findById(decoded.id);
 		if (!freshUser) return next(new appErr('ERROR: El usuario asociado al token no existe en la BD', 401));
 		//comprobar si el usuario cambio el password después de que el token se creo o reinició? VIDEO 131
-		console.log(decoded);
 		if (freshUser.changedPassword(decoded.iat))
 			//en la propiedad 'iat' del token se guarda la fecha en segundos de nacimiento del token.
 			//si desde que se creo el token hemos cambiado el password, el token ya no es válido
@@ -163,7 +167,6 @@ const verifyToken = async (req, res, next) => {
 
 		//si llega hasta aquí el código puede continuar con el siguiente middleware
 		req.user = freshUser; //pasamos el usuario al siguiente middleware
-
 		next();
 	} catch (err) {
 		next(err);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-
+//const User = require('./user'); video 151
 const tourSchema = new mongoose.Schema(
 	{
 		name: {
@@ -16,7 +16,33 @@ const tourSchema = new mongoose.Schema(
 				message: 'The name must only contains letters.',
 			},
 		},
+		startLocation: {
+			//GeoJson
+			type: {
+				type: String,
+				default: 'Point',
+				enum: ['Point'],
+			},
+			coordinates: [Number], //long, lat
+			address: String,
+			description: String,
+		},
+		locations: [
+			{
+				//GeoJson
+				type: {
+					type: String,
+					default: 'Point',
+					enum: ['Point'],
+				},
+				coordinates: [Number], //long, lat
+				address: String,
+				description: String,
+				day: Number,
+			},
+		],
 		slug: String,
+		guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
 		duration: {
 			type: Number,
 			required: [true, 'The tour must have a duration of 1 day min.'],
@@ -24,10 +50,7 @@ const tourSchema = new mongoose.Schema(
 		},
 		maxGroupSize: {
 			type: Number,
-			required: [
-				true,
-				'The tour must have a group size of 1 min and 25 max.',
-			],
+			required: [true, 'The tour must have a group size of 1 min and 25 max.'],
 		},
 		difficulty: {
 			type: String,
@@ -64,8 +87,7 @@ const tourSchema = new mongoose.Schema(
 					//this solamente es válido en la creación de nuevos documnentos (no update)
 					return this.price > value;
 				},
-				message: (props) =>
-					`The discount of the tour (${props.value}) must be lower than the price`,
+				message: props => `The discount of the tour (${props.value}) must be lower than the price`,
 			},
 		},
 		summary: {
@@ -96,8 +118,25 @@ const tourSchema = new mongoose.Schema(
 	},
 );
 
+//embeding: incluir el documento completo de usuario en el array de guias
+//no vamos a hacer lo así. guardaremos solamente el id.
+// tourSchema.pre('save', async function (next) {
+// 	const guidesPromises = this.guides.map(async guideId => await User.findById(guideId));
+// 	this.guides = await Promise.all(guidesPromises);
+// 	next();
+// });
+
 tourSchema.pre('save', function (next) {
 	this.slug = slugify(this.name, { lower: true });
+	next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+	//todas las instrucciones que empiezen por find (find, findOne,...)
+	//populate todos los guias que aparezcan en el array de guías del documento tour (video 152)
+	//selecciono todos los campos del documento usuario excepto los que tienen delante el -
+	this.populate({ path: 'guides', select: '-__v -passwordChangedAt' });
+	this.startQuery = Date.now();
 	next();
 });
 
@@ -106,7 +145,7 @@ tourSchema.pre('save', function (next) {
 tourSchema.pre(/^find/, function (next) {
 	//todas las instrucciones que empiezen por find (find, findOne,...)
 	//this.find({ vip: { $ne: true } }); //pre-filtro (video 105)
-	this.find();
+	//this.find();
 	this.startQuery = Date.now();
 	next();
 });
@@ -122,9 +161,16 @@ tourSchema.pre('aggregate', function (next) {
 	next();
 });
 
-//Virtual
+//campos virtuales o campos cálculados
 tourSchema.virtual('durationWeeks').get(function () {
 	return this.duration / 7;
+});
+
+//virtual populate (video 156)
+tourSchema.virtual('reviews', {
+	ref: 'Review', //nombre del modelo Review
+	foreignField: 'tourReview', //nombre del campo en el modelo Review
+	localField: '_id', //nombre del campo de Tour que enlaza con Review
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
