@@ -1,0 +1,13 @@
+#Retrive /
+GET  http://localhost:3000
+
+###
+#CREATE (POST) a post.
+POST http://localhost:8080/feed/create-post
+content-type: application/json
+
+{
+    "title": "sample",
+    "content": "Second sample creation post"
+}
+

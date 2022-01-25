@@ -1,0 +1,10 @@
+{
+   "files.autoSave": "onWindowChange",
+   "editor.defaultFormatter": "esbenp.prettier-vscode",
+   "prettier.jsxSingleQuote": true,
+   "prettier.printWidth": 120,
+   "prettier.singleQuote": true,
+   "prettier.tabWidth": 3,
+   "prettier.trailingComma": "all",
+   "prettier.useTabs": true
+}
