@@ -1,6 +1,7 @@
 const Tour = require('../models/tour');
 const QueryBuilder = require('../utils/queryBuilder');
 const appError = require('../utils/appError');
+const factoryFn = require('./handlerFactory');
 
 //Routes handlers
 const checkBodyTour = (req, res, next) => {
@@ -193,20 +194,24 @@ const updateTour = async (req, res, next) => {
 	}
 };
 
-const deleteTour = async (req, res, next) => {
-	try {
-		const deleted = await Tour.findByIdAndDelete(req.params.id);
-		if (!deleted) {
-			return next(new appError(`No tour found with that id: ${req.params.id}.`, 404));
-		}
-		res.status(200).json({
-			status: 'Success',
-			data: { message: 'Deleted tour with id ' + req.params.id },
-		});
-	} catch (err) {
-		next(err);
-	}
-};
+const deleteTour = factoryFn.deleteOne(Tour);
+//const deleteTour = factoryfn.deleteFromModel(Tour);
+
+//FORMA TRADICIONAL
+// const deleteTour = async (req, res, next) => {
+// 	try {
+// 		const deleted = await Tour.findByIdAndDelete(req.params.id);
+// 		if (!deleted) {
+// 			return next(new appError(`No tour found with that id: ${req.params.id}.`, 404));
+// 		}
+// 		res.status(200).json({
+// 			status: 'Success',
+// 			data: { message: 'Deleted tour with id ' + req.params.id },
+// 		});
+// 	} catch (err) {
+// 		next(err);
+// 	}
+// };
 
 module.exports = {
 	getNumberOfDocs,
@@ -218,6 +223,6 @@ module.exports = {
 	getMonthPlan,
 	getTour,
 	createTour,
-	deleteTour,
 	updateTour,
+	deleteTour,
 };

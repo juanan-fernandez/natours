@@ -166,7 +166,7 @@ const verifyToken = async (req, res, next) => {
 			return next(new appErr('ERROR: El usuario modificó su password. Por favor inicie sesión de nuevo', 401));
 
 		//si llega hasta aquí el código puede continuar con el siguiente middleware
-		req.user = freshUser; //pasamos el usuario al siguiente middleware
+		req.user = freshUser; //guardamos el usuario en req
 		next();
 	} catch (err) {
 		next(err);
