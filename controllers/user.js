@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const appErr = require('../utils/appError');
+const { deleteOneById, updateOneById, getOneById, getAll } = require('./handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
 	const newObj = {};
@@ -9,37 +10,20 @@ const filterObj = (obj, ...allowedFields) => {
 	return newObj;
 };
 
-//handler users
-const getAllUsers = async (req, res, next) => {
-	try {
-		const users = await User.find();
-		res.status(200).json({
-			status: 'Success',
-			data: users,
-		});
-	} catch (error) {
-		next(error);
-	}
-};
+//OPERACIONES CRUD con las funciones refactorizadas
+//función para que el admin actualize los datos de un usuario.
+const updateUser = updateOneById(User);
+//borrar usuario por el admin.
+const deleteUser = deleteOneById(User);
+const getAllUsers = getAll(User);
+const getUser = getOneById(User);
 
-const createUser = (req, res, next) => {
-	res.status(201).json({
-		status: 'Success',
-	});
+//middleware para indicar en req.params el id del usuario actual
+const getMeId = (req, res, next) => {
+	req.params.id = req.user.id;
+	next();
 };
-
-const getUser = async (req, res, next) => {
-	try {
-		const user = await User.findById(req.params.id);
-		if (!user) return next(new appErr('El usuario solicitado no existe en la BD.', 400));
-		res.status(200).json({
-			status: 'Success',
-			user: user,
-		});
-	} catch (error) {
-		next(error);
-	}
-};
+const getMe = getOneById(User);
 
 //esta función la usan los usuarios autenticados para actualizar sus datos
 const updateMe = async (req, res, next) => {
@@ -89,28 +73,46 @@ const enableUser = async (req, res, next) => {
 	}
 };
 
-//función para que el admin actualize los datos de un usuario.
-const updateUser = (req, res, next) => {
-	const userId = req.params.id;
-	res.status(200).json({
-		status: 'Success',
-	});
-};
+module.exports = { getAllUsers, getUser, getMeId, getMe, updateMe, deleteMe, enableUser, updateUser, deleteUser };
 
-const deleteUser = async (req, res, next) => {
-	try {
-		const user = await User.findByIdAndDelete(req.params.id);
-		if (!user) return next(new appErr('El usuario solicitado no existe en la BD'), 400);
+//handler users
+// const getAllUsers = async (req, res, next) => {
+// 	try {
+// 		const users = await User.find();
+// 		res.status(200).json({
+// 			status: 'Success',
+// 			data: users,
+// 		});
+// 	} catch (error) {
+// 		next(error);
+// 	}
+// };
 
-		user.password = undefined; //quitar password de la respuesta
-		res.status(200).json({
-			status: 'Success',
-			result: `User ${user.name} deleted.`,
-			user: user,
-		});
-	} catch (error) {
-		next(error);
-	}
-};
+// const deleteUser = async (req, res, next) => {
+// 	try {
+// 		const user = await User.findByIdAndDelete(req.params.id);
+// 		if (!user) return next(new appErr('El usuario solicitado no existe en la BD'), 400);
 
-module.exports = { getAllUsers, createUser, getUser, updateMe, deleteMe, enableUser, updateUser, deleteUser };
+// 		user.password = undefined; //quitar password de la respuesta
+// 		res.status(200).json({
+// 			status: 'Success',
+// 			result: `User ${user.name} deleted.`,
+// 			user: user,
+// 		});
+// 	} catch (error) {
+// 		next(error);
+// 	}
+// };
+
+// const getUser = async (req, res, next) => {
+// 	try {
+// 		const user = await User.findById(req.params.id);
+// 		if (!user) return next(new appErr('El usuario solicitado no existe en la BD.', 400));
+// 		res.status(200).json({
+// 			status: 'Success',
+// 			user: user,
+// 		});
+// 	} catch (error) {
+// 		next(error);
+// 	}
+// };

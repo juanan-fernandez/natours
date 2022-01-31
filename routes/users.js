@@ -12,12 +12,14 @@ router.route('/forgotpass').post(authCtl.forgotPassword);
 router.route('/resetpass/:token').patch(authCtl.resetPassword);
 router.route('/updatepass').patch(authCtl.verifyToken, authCtl.updatePassword);
 //otra forma para las rutas sería la siguiente
+router.get('/getMe', authCtl.verifyToken, usersCtl.getMeId, usersCtl.getMe);
 router.patch('/updateMe', authCtl.verifyToken, usersCtl.updateMe);
 router.delete('/deleteMe', authCtl.verifyToken, usersCtl.deleteMe);
 router.patch('/enableUser', usersCtl.enableUser);
 
 //RUTAS user
-router.route('/').get(usersCtl.getAllUsers).post(usersCtl.createUser);
+router.route('/').get(usersCtl.getAllUsers);
+//.post(usersCtl.createUser); es /signup
 //RUTAS user id
 router.route('/:id').get(usersCtl.getUser).patch(usersCtl.updateUser).delete(usersCtl.deleteUser);
 

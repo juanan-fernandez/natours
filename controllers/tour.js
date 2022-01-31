@@ -1,7 +1,14 @@
 const Tour = require('../models/tour');
 const QueryBuilder = require('../utils/queryBuilder');
-const appError = require('../utils/appError');
-const factoryFn = require('./handlerFactory');
+//const appError = require('../utils/appError');
+const { createOne, getOneById, deleteOneById, updateOneById, getAll } = require('./handlerFactory');
+
+//OPERACIONES CRUD con las funciones refactorizadas.
+const getAllTours = getAll(Tour);
+const createTour = createOne(Tour);
+const getTour = getOneById(Tour, { path: 'reviews' });
+const updateTour = updateOneById(Tour);
+const deleteTour = deleteOneById(Tour);
 
 //Routes handlers
 const checkBodyTour = (req, res, next) => {
@@ -64,17 +71,17 @@ const getNumberOfDocs = async (req, res, next) => {
 };
 ///////////FIN PRUEBAS///////////////////////////////////////////
 
-const getAllTours = async (req, res, next) => {
-	const newQuery = new QueryBuilder(Tour.find(), req.query);
+// const getAllTours = async (req, res, next) => {
+// 	const newQuery = new QueryBuilder(Tour.find(), req.query);
 
-	const tours = await newQuery.filter().sort().select().paginate().query;
+// 	const tours = await newQuery.filter().sort().select().paginate().query;
 
-	res.status(200).json({
-		status: 'Success',
-		results: tours.length,
-		data: { tours: tours },
-	});
-};
+// 	res.status(200).json({
+// 		status: 'Success',
+// 		results: tours.length,
+// 		data: { tours: tours },
+// 	});
+// };
 
 const getTourStats = async (req, res, next) => {
 	try {
@@ -142,60 +149,23 @@ const getMonthPlan = async (req, res, next) => {
 	}
 };
 
-const createTour = async (req, res, next) => {
-	const newTour = new Tour(req.body);
-	try {
-		//const newTour = await Tour.create(req.body) otra forma de hacerlo
-		const doc = await newTour.save();
-		res.status(201).json({
-			status: 'Success',
-			data: { tour: doc },
-		});
-	} catch (err) {
-		next(err);
-	}
-};
-
-const getTour = async (req, res, next) => {
-	try {
-		const tour = await Tour.findById(req.params.id).populate('reviews'); //virtual populate
-		//const tour = await Tour.findById(req.params.id).populate({ path: 'guides', select: 'name email -_id' }); //populate seleccionando campos
-		if (!tour) {
-			return next(new appError(`No tour found with the id ${req.params.id}`, 404));
-		}
-		res.status(200).json({
-			status: 'Success',
-			requested: tour._id,
-			data: { tour: tour },
-		});
-	} catch (err) {
-		next(err);
-	}
-};
-
-const updateTour = async (req, res, next) => {
-	try {
-		const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-			new: true,
-			runValidators: true,
-		});
-
-		if (!tour) {
-			return next(new appError(`No tour found with that id.`, 404));
-		}
-
-		res.status(200).json({
-			status: 'Success',
-			requested: tour._id,
-			data: { tour: tour },
-		});
-	} catch (err) {
-		next(err);
-	}
-};
-
-const deleteTour = factoryFn.deleteOne(Tour);
-//const deleteTour = factoryfn.deleteFromModel(Tour);
+//FORMA TRADICIONAL
+// const getTour = async (req, res, next) => {
+// 	try {
+// 		const tour = await Tour.findById(req.params.id).populate('reviews'); //virtual populate
+// 		//const tour = await Tour.findById(req.params.id).populate({ path: 'guides', select: 'name email -_id' }); //populate seleccionando campos
+// 		if (!tour) {
+// 			return next(new appError(`No tour found with the id ${req.params.id}`, 404));
+// 		}
+// 		res.status(200).json({
+// 			status: 'Success',
+// 			requested: tour._id,
+// 			data: { tour: tour },
+// 		});
+// 	} catch (err) {
+// 		next(err);
+// 	}
+// };
 
 //FORMA TRADICIONAL
 // const deleteTour = async (req, res, next) => {

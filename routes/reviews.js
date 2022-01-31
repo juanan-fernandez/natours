@@ -7,9 +7,9 @@ const router = express.Router({ mergeParams: true }); //video 158. con esta opci
 //router.post('/', authCtl.verifyToken, authCtl.restrictTo('user'), reviewCtl.postReview);
 router
 	.route('/')
-	.get(reviewCtl.getReviews)
-	.post(authCtl.verifyToken, authCtl.restrictTo('user'), reviewCtl.postReview);
+	.get(reviewCtl.filterReviewByTour, reviewCtl.getReviews)
+	.post(authCtl.verifyToken, authCtl.restrictTo('user'), reviewCtl.setTourAndUserId, reviewCtl.postReview);
 
-router.route('/:id').get(reviewCtl.getOneReview);
+router.route('/:id').get(reviewCtl.getOneReview).delete(reviewCtl.deleteReview).patch(reviewCtl.updateReview);
 
 module.exports = router;
