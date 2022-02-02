@@ -118,6 +118,12 @@ const tourSchema = new mongoose.Schema(
 	},
 );
 
+//tourSchema.index({ price: 1 }); //establecemos un index en el precio porque es una búsqueda habitual
+
+//si creamos un indice compuesto no es necesario crear luego los indices individuales para cada campo
+tourSchema.index({ price: 1, ratingsAverage: -1 }); //indice compuesto por precio ascendente y ratings descendente.
+tourSchema.index({ slug: 1 });
+
 //embeding: incluir el documento completo de usuario en el array de guias
 //no vamos a hacer lo así. guardaremos solamente el id.
 // tourSchema.pre('save', async function (next) {

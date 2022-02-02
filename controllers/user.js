@@ -60,7 +60,7 @@ const deleteMe = async (req, res, next) => {
 
 const enableUser = async (req, res, next) => {
 	try {
-		const userId = '61cdf0c3254b7f50b0e5e30e';
+		const userId = req.params.id;
 		const criteria = { active: false, _id: userId };
 		await User.updateOne(criteria, { active: true });
 

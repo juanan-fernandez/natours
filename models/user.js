@@ -88,13 +88,16 @@ userSchema.pre('save', function (next) {
 	next();
 });
 
-//la siguiente función solo actua usando modelo.save()
+//la siguiente función solo actua usando modelo.save() o modelo.create()
 userSchema.pre('save', async function (next) {
 	if (this.isModified('password')) {
 		this.password = await bcrypt.hash(this.password, 12);
 		this.passwordConfirm = undefined; //no guardamos la confirmación del password
 	}
+	next();
+});
 
+userSchema.pre('save', function (next) {
 	if (this.isNew) this.registerDate = this.getNow();
 	next();
 });
@@ -104,7 +107,7 @@ userSchema.methods.getNow = function (offset = 0) {
 	return (
 		date.getFullYear() +
 		'-' +
-		('0' + date.getMonth() + 1).slice(-2) +
+		('0' + (date.getMonth() * 1 + 1)).slice(-2) +
 		'-' +
 		('0' + date.getDate()).slice(-2) +
 		'T' +

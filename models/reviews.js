@@ -1,12 +1,12 @@
 //review text, rating, timestamps / ref to the tour / ref. to the user writed
 const mongoose = require('mongoose');
+const Tour = require('./tour');
 
 const reviewSchema = new mongoose.Schema(
 	{
 		strReview: {
 			type: String,
 			required: [true, 'Por favor, escriba un texto de al menos 10 caracteres'],
-			unique: true,
 			trim: true,
 			minLength: [5, 'La revisión debe tener al menos 10 caractéres'],
 		},
@@ -42,6 +42,35 @@ reviewSchema.pre(/^find/, function (next) {
 	//this.populate({ path: 'tourReview', select: 'name' }).populate({ path: 'userReview', select: 'name' });
 	this.populate({ path: 'userReview', select: 'name' });
 	next();
+});
+
+reviewSchema.statics.calcAvgRatings = async function (tourId) {
+	//1.calcular la media  del tour pasado como parametro
+	const stats = await this.aggregate([
+		{ $match: { tourReview: { $eq: tourId } } },
+		{
+			$group: {
+				_id: '$tourReview',
+				numOfRatings: { $sum: 1 },
+				avgRating: { $avg: '$rating' },
+			},
+		},
+		{
+			$sort: { avgPrice: 1 },
+		},
+	]);
+
+	const [results] = stats;
+	const { numOfRatings, avgRating } = results;
+	//ahora tenemos que actualizar el tour en cuestión
+	await Tour.findByIdAndUpdate(tourId, {
+		ratingsAverage: avgRating,
+		ratingsQuantity: numOfRatings,
+	});
+};
+
+reviewSchema.post('save', function () {
+	this.constructor.calcAvgRatings(this.tourReview); //video 167
 });
 
 const Review = mongoose.model('Review', reviewSchema);

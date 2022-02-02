@@ -67,10 +67,13 @@ const updateOneById = Model => async (req, res, next) => {
 };
 
 const getAll = Model => async (req, res, next) => {
-	if (req.params.tourId) req.query.tourReview = req.params.tourId;
-	const theQuery = new QueryBuilder(Model.find(), req.query);
+	if (req.params.tourId) req.query.tourReview = req.params.tourId; //hack para buscar las reviews que pertenecen a un tour
+
 	try {
-		const docs = await theQuery.filter().sort().select().paginate().query;
+		const queryAll = new QueryBuilder(Model.find(), req.query).filter().sort().select().paginate();
+		const docs = await queryAll.query;
+		//const docs = await queryAll.query.explain();
+
 		res.status(200).json({
 			status: 'Success',
 			results: docs.length,

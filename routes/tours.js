@@ -30,8 +30,11 @@ router.use('/:tourId/reviews', reviewRoutes);
 //otra forma de hacerlo
 router.route('/top-five').get(toursCtlr.aliasTopFive, toursCtlr.getAllTours);
 router.route('/tour-stats').get(toursCtlr.getTourStats);
-router.route('/tour-plan/:year').get(toursCtlr.getMonthPlan);
-router.route('/').get(authCtlr.verifyToken, toursCtlr.getAllTours).post(toursCtlr.createTour);
+router
+	.route('/tour-plan/:year')
+	.get(authCtlr.verifyToken, authCtlr.restrictTo('admin', 'leader-guide'), toursCtlr.getMonthPlan);
+
+router.route('/').get(toursCtlr.getAllTours).post(authCtlr.verifyToken, toursCtlr.createTour);
 
 //Pruebas
 router.route('/test').get(toursCtlr.getTheTours);
@@ -40,7 +43,7 @@ router.route('/count').get(toursCtlr.getNumberOfDocs);
 router
 	.route('/:id')
 	.get(toursCtlr.getTour)
-	.patch(toursCtlr.updateTour)
+	.patch(authCtlr.verifyToken, authCtlr.restrictTo('admin', 'leader-guide'), toursCtlr.updateTour)
 	.delete(authCtlr.verifyToken, authCtlr.restrictTo('admin', 'leader-guide'), toursCtlr.deleteTour);
 
 module.exports = router;
