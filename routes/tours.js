@@ -38,8 +38,8 @@ router
 //tours-distance/233/center/-40,45/unit/mi
 router.route('/tours-distance/:distance/center/:latlng/unit/:unit').get(toursCtlr.getGeoSpatial);
 
-//get all the tours distance from a point
-router.route('/tours-from/:distance/center/:latlng/unit/:unit').get(toursCtlr.getGeoDistance);
+//obtener la distancia de todos los tours a un punto dado
+router.route('/tours-from/:latlng/unit/:unit').get(toursCtlr.getGeoDistance);
 
 router.route('/').get(toursCtlr.getAllTours).post(authCtlr.verifyToken, toursCtlr.createTour);
 

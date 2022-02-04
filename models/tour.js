@@ -162,11 +162,11 @@ tourSchema.post(/^find/, function (next) {
 });
 
 //Aggregation middleware.
-tourSchema.pre('aggregate', function (next) {
-	this.pipeline().unshift({ $match: { vip: { $ne: true } } });
-	console.log(this.pipeline());
-	next();
-});
+// tourSchema.pre('aggregate', function (next) {
+// 	this.pipeline().unshift({ $match: { vip: { $ne: true } } });
+// 	console.log(this.pipeline());
+// 	next();
+// });
 
 //campos virtuales o campos cálculados
 tourSchema.virtual('durationWeeks').get(function () {

@@ -168,20 +168,40 @@ const getGeoSpatial = async (req, res, next) => {
 			results: tours.length,
 			data: tours,
 		});
-		// const geo = Tour.aggregate([
-		// 	{
-		// 		$geoNear: {
-		// 			near: {
-		// 				type: 'Point',
-		// 				coordinates: [lng, lat],
-		// 			},
-		// 		},
-		// 		distanceField: 'dist.calculated',
-		// 		spherical: true,
-		// 		maxDistance: 10000,
-		// 	},
-		// ]);
-		// const results = await geo;
+	} catch (err) {
+		next(new AppError(err.message, 500));
+	}
+};
+
+const getGeoDistance = async (req, res, next) => {
+	const { latlng, unit } = req.params;
+	const [lat, lng] = latlng.split(',');
+
+	if (!lat || !lng) {
+		next(new AppError('Por favor indique unas coordenadas válidas', 400));
+	}
+	try {
+		const distances = Tour.aggregate([
+			{
+				$geoNear: {
+					near: {
+						type: 'Point',
+						coordinates: [lng * 1, lat * 1],
+					},
+					distanceField: 'distance',
+					distanceMultiplier: unit === 'km' ? 0.001 : 1,
+				},
+			},
+			{
+				$project: { distance: 1, name: 1 },
+			},
+		]);
+		const results = await distances;
+		console.log('results: ', results);
+		res.status(201).json({
+			status: 'Success',
+			data: results,
+		});
 	} catch (err) {
 		next(new AppError(err.message, 500));
 	}
@@ -194,6 +214,7 @@ module.exports = {
 	aliasTopFive,
 	getAllTours,
 	getGeoSpatial,
+	getGeoDistance,
 	getTourStats,
 	getMonthPlan,
 	getTour,
