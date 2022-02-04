@@ -34,6 +34,13 @@ router
 	.route('/tour-plan/:year')
 	.get(authCtlr.verifyToken, authCtlr.restrictTo('admin', 'leader-guide'), toursCtlr.getMonthPlan);
 
+//que tours se comienzan en una localización a una distancia de unas cordenadas dadas
+//tours-distance/233/center/-40,45/unit/mi
+router.route('/tours-distance/:distance/center/:latlng/unit/:unit').get(toursCtlr.getGeoSpatial);
+
+//get all the tours distance from a point
+router.route('/tours-from/:distance/center/:latlng/unit/:unit').get(toursCtlr.getGeoDistance);
+
 router.route('/').get(toursCtlr.getAllTours).post(authCtlr.verifyToken, toursCtlr.createTour);
 
 //Pruebas

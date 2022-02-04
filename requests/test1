@@ -11,3 +11,16 @@ content-type: application/json
     "content": "Second sample creation post"
 }
 
+###
+# @name getpost
+GET https://jsonplaceholder.typicode.com/todos/1
+
+ 
+###
+##
+GET http://localhost:3000/api/v1/users/mytest
+content-type: application/json
+
+{
+    "titlez": "{{authToken}}" 
+}

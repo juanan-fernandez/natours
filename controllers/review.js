@@ -21,6 +21,19 @@ const filterReviewByTour = (req, res, next) => {
 
 const getReviews = factoryFn.getAll(Review);
 
+const deleteAllReviewsInTour = async (req, res, next) => {
+	//TODO factorizar esta función en handle factory
+	try {
+		const deleted = await Review.deleteMany({ tourReview: req.params.tourId });
+		res.status(200).json({
+			status: 'Success',
+			data: { deleted: deleted.deletedCount },
+		});
+	} catch (err) {
+		next(err);
+	}
+};
+
 module.exports = {
 	filterReviewByTour,
 	getReviews,
@@ -28,6 +41,7 @@ module.exports = {
 	postReview,
 	getOneReview,
 	deleteReview,
+	deleteAllReviewsInTour,
 	updateReview,
 };
 

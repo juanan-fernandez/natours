@@ -12,7 +12,8 @@ router.use(authCtl.verifyToken);
 router
 	.route('/')
 	.get(reviewCtl.filterReviewByTour, reviewCtl.getReviews)
-	.post(authCtl.verifyToken, authCtl.restrictTo('user'), reviewCtl.setTourAndUserId, reviewCtl.postReview);
+	.post(authCtl.verifyToken, authCtl.restrictTo('user'), reviewCtl.setTourAndUserId, reviewCtl.postReview)
+	.delete(authCtl.restrictTo('admin'), reviewCtl.deleteAllReviewsInTour);
 
 router
 	.route('/:id')

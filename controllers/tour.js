@@ -1,4 +1,5 @@
 const Tour = require('../models/tour');
+const AppError = require('../utils/appError');
 const QueryBuilder = require('../utils/queryBuilder');
 //const appError = require('../utils/appError');
 const { createOne, getOneById, deleteOneById, updateOneById, getAll } = require('./handlerFactory');
@@ -149,6 +150,58 @@ const getMonthPlan = async (req, res, next) => {
 	}
 };
 
+const getGeoSpatial = async (req, res, next) => {
+	const { distance, latlng, unit } = req.params;
+	const [lat, lng] = latlng.split(',');
+	//si la unidad de medida son millas los radianes se calculan dividiendo entre el radio de la tierra en millas
+	//si son kms entre el radio de la tierra en kms.
+	const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+	if (!lat || !lng) {
+		next(new AppError('Por favor indique unas coordenadas válidas', 400));
+	}
+	try {
+		const tours = await Tour.find({
+			startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+		}).select('name');
+		res.status(201).json({
+			status: 'Success',
+			results: tours.length,
+			data: tours,
+		});
+		// const geo = Tour.aggregate([
+		// 	{
+		// 		$geoNear: {
+		// 			near: {
+		// 				type: 'Point',
+		// 				coordinates: [lng, lat],
+		// 			},
+		// 		},
+		// 		distanceField: 'dist.calculated',
+		// 		spherical: true,
+		// 		maxDistance: 10000,
+		// 	},
+		// ]);
+		// const results = await geo;
+	} catch (err) {
+		next(new AppError(err.message, 500));
+	}
+};
+
+module.exports = {
+	getNumberOfDocs,
+	getTheTours,
+	checkBodyTour,
+	aliasTopFive,
+	getAllTours,
+	getGeoSpatial,
+	getTourStats,
+	getMonthPlan,
+	getTour,
+	createTour,
+	updateTour,
+	deleteTour,
+};
+
 //FORMA TRADICIONAL
 // const getTour = async (req, res, next) => {
 // 	try {
@@ -182,17 +235,3 @@ const getMonthPlan = async (req, res, next) => {
 // 		next(err);
 // 	}
 // };
-
-module.exports = {
-	getNumberOfDocs,
-	getTheTours,
-	checkBodyTour,
-	aliasTopFive,
-	getAllTours,
-	getTourStats,
-	getMonthPlan,
-	getTour,
-	createTour,
-	updateTour,
-	deleteTour,
-};

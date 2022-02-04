@@ -66,6 +66,7 @@ const tourSchema = new mongoose.Schema(
 			default: 4.5,
 			min: [1, 'Rating must be above 1.0'],
 			max: [5, 'Rating must be below 5.0'],
+			set: val => Math.round(val * 10) / 10, //val=4.666 * 10 => round(46.66) => 47 / 10 => 4.7
 		},
 		ratingsQuantity: {
 			type: Number,
@@ -123,7 +124,7 @@ const tourSchema = new mongoose.Schema(
 //si creamos un indice compuesto no es necesario crear luego los indices individuales para cada campo
 tourSchema.index({ price: 1, ratingsAverage: -1 }); //indice compuesto por precio ascendente y ratings descendente.
 tourSchema.index({ slug: 1 });
-
+tourSchema.index({ startLocation: '2dsphere' });
 //embeding: incluir el documento completo de usuario en el array de guias
 //no vamos a hacer lo así. guardaremos solamente el id.
 // tourSchema.pre('save', async function (next) {

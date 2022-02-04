@@ -35,6 +35,8 @@ const reviewSchema = new mongoose.Schema(
 	},
 );
 
+reviewSchema.index({ tourReview: 1, userReview: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
 	//todas las instrucciones que empiezen por find (find, findOne,...)
 	//populate  de varias referencias. (NO INTERESA porque en el tour haremos un populate virtual de las reviews de ese tour) VIDEO 156
@@ -60,17 +62,37 @@ reviewSchema.statics.calcAvgRatings = async function (tourId) {
 		},
 	]);
 
-	const [results] = stats;
-	const { numOfRatings, avgRating } = results;
-	//ahora tenemos que actualizar el tour en cuestión
-	await Tour.findByIdAndUpdate(tourId, {
-		ratingsAverage: avgRating,
-		ratingsQuantity: numOfRatings,
-	});
+	if (stats.length > 0) {
+		const [results] = stats;
+		const { numOfRatings, avgRating } = results;
+		//ahora tenemos que actualizar el tour en cuestión
+		await Tour.findByIdAndUpdate(tourId, {
+			ratingsAverage: avgRating.toFixed(2),
+			ratingsQuantity: numOfRatings,
+		});
+	} else {
+		await Tour.findByIdAndUpdate(tourId, {
+			//si no han quedado revisiones vuelvo a los valores por defecto
+			ratingsAverage: 4.5,
+			ratingsQuantity: 0,
+		});
+	}
 };
 
 reviewSchema.post('save', function () {
 	this.constructor.calcAvgRatings(this.tourReview); //video 167
+});
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+	//video 168
+	//necesitamos el id del tour del cual estamos modificando la review
+	//creo la propiedad result en el objeto para tenerla disponible en el siguiente evento
+	this.result = await this.findOne(); //ojo,. en result se me guarda el documento y todo el objeto Review
+	next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+	await this.result.constructor.calcAvgRatings(this.result.tourReview); //video 167. en result tengo el documento y todas las funciones del objeto Review
 });
 
 const Review = mongoose.model('Review', reviewSchema);
